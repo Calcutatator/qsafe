@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>qsafe — quantum-resistance breakdown for blockchains</title>
+  <meta name="description" content="qsafe breaks a blockchain into 5 core sections and 30 components, each rated for what it takes to be quantum-safe." />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#/">
+        <span class="brand__mark">qsafe</span>
+        <span class="brand__tag">quantum-resistance, component by component</span>
+      </a>
+      <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+    </div>
+  </header>
+
+  <main class="app" id="app"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>5 core sections &middot; 30 components &middot; model v<span id="ver">&mdash;</span></span>
+      <span class="muted">v1 is the generalized model. Per-chain scorecards come next.</span>
+    </div>
+  </footer>
+
+  <noscript>
+    <p style="max-width:940px;margin:2rem auto;padding:0 1.25rem;">qsafe needs JavaScript to render the taxonomy. The underlying data is in <code>data/taxonomy.json</code>.</p>
+  </noscript>
+
+  <script src="data/taxonomy.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

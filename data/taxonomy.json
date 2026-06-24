@@ -1,0 +1,422 @@
+{
+  "meta": {
+    "name": "quantum-proofing-blockchains",
+    "version": "2.0.0",
+    "updated": "2026-06-22",
+    "description": "A generalizable component taxonomy for assessing the quantum resistance of any blockchain. 5 core sections, 30 components, each with what it is and what it takes to be quantum-proof.",
+    "lens": {
+      "signatures": "Broken by Shor (ECDSA, EdDSA, Schnorr, sr25519, BLS). Fix: ML-DSA / SLH-DSA / FN-DSA.",
+      "encryption": "Broken by Shor (RSA, ECDH, TLS, IBE); harvest-now-decrypt-later. Fix: ML-KEM.",
+      "pairings": "Pairing-based crypto (BLS, KZG) broken by Shor. The single most common root cause.",
+      "hash": "Only weakened by Grover (quadratic, barely parallelizes). 256-bit hashes stay safe.",
+      "depends": "Can be built hash-based (safe) or pairing/EC-based (breakable); design decides."
+    },
+    "status_values": [
+      "breakable",
+      "depends",
+      "safe"
+    ],
+    "primitive_values": [
+      "signatures",
+      "encryption",
+      "pairings",
+      "hash",
+      "depends"
+    ],
+    "maturity_values": [
+      "standardized",
+      "deployed",
+      "prototype",
+      "research",
+      "none"
+    ],
+    "applicability_values": [
+      "universal",
+      "common",
+      "conditional"
+    ],
+    "applicability_notes": "universal = on essentially every chain; common = widespread but not protocol-core; conditional = architecture-specific (mainly rollups/modular/validity chains; mark N/A for monolithic L1s)."
+  },
+  "cores": [
+    {
+      "id": 1,
+      "name": "Keys & Accounts",
+      "label": "Who's allowed to move money",
+      "at_a_glance": "breakable",
+      "applicability": "universal",
+      "notes": "Address is usually a hash of the public key, so untouched funds are safe; transacting reveals the key (Solana is the exception: address = raw Ed25519 pubkey). Migratability axis: EdDSA chains + Polkadot can rescue exposed accounts in place; Bitcoin/Ethereum BIP-32 wallets must freeze.",
+      "subsections": [
+        {
+          "subsection_id": "1.1",
+          "subsection_label": "Account signing keys",
+          "one_liner": "The key that authorizes spending.",
+          "what_it_is": "The user's private key that signs transactions.",
+          "quantum_proof_requirement": "Sign with a NIST PQ signature (ML-DSA, SLH-DSA; Falcon when finalized) instead of ECDSA/EdDSA/Stark-curve, usually via account abstraction.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "1.2",
+          "subsection_label": "Key custody & storage",
+          "one_liner": "Where the private key lives.",
+          "what_it_is": "Self-custody, hardware wallet, HSM, or exchange.",
+          "quantum_proof_requirement": "The stored key is a PQ key and the signer hardware/firmware can produce PQ signatures.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "1.3",
+          "subsection_label": "MPC / threshold signing",
+          "one_liner": "One key split across several parties.",
+          "what_it_is": "Distributed signers jointly produce a single signature.",
+          "quantum_proof_requirement": "A threshold scheme over PQ primitives (research-stage; NIST IR 8214C). Splitting a classical key gives no quantum protection.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "1.4",
+          "subsection_label": "Account abstraction / smart accounts",
+          "one_liner": "Programmable account validation.",
+          "what_it_is": "Accounts whose verification logic is code (ERC-4337, native AA).",
+          "quantum_proof_requirement": "Implement a PQ-signature verifier. This is the main migration vehicle (per-account swap, no L1 hard fork).",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "deployed",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "1.5",
+          "subsection_label": "Passkeys / session keys",
+          "one_liner": "Device-bound or delegated keys.",
+          "what_it_is": "WebAuthn passkeys (secp256r1) and short-lived session keys.",
+          "quantum_proof_requirement": "PQ-capable authenticators or a PQ verifier in the account; P-256 is still Shor-broken.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "1.6",
+          "subsection_label": "Identity & naming",
+          "one_liner": "Names and IDs bound to an account.",
+          "what_it_is": "ENS, DIDs, verifiable credentials.",
+          "quantum_proof_requirement": "Mostly inherits the controlling account's signature (safe once PQ); replace pairing-based credentials (BBS+).",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "1.7",
+          "subsection_label": "Governance & voting",
+          "one_liner": "Authorizing protocol and treasury decisions.",
+          "what_it_is": "On-chain votes/delegations and off-chain signed messages (Snapshot).",
+          "quantum_proof_requirement": "Voting authorization uses PQ account signatures.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "common"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Apps & Inputs",
+      "label": "The programs, and the outside data they trust",
+      "at_a_glance": "breakable",
+      "applicability": "common",
+      "notes": "Oracle and randomness keys are shared/threshold, so one break is systemic across all consumers. Solana PoH is a hash chain (Grover-only), not a Shor-exposed VDF.",
+      "subsections": [
+        {
+          "subsection_id": "2.1",
+          "subsection_label": "Contract signature verification",
+          "one_liner": "Contracts that check signatures.",
+          "what_it_is": "On-chain ECDSA checks (ecrecover, EIP-712 permits/approvals) and N-of-M multisig contracts.",
+          "quantum_proof_requirement": "PQ-signature precompiles/verifiers, and contracts that don't hardcode ECDSA.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "prototype",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "2.2",
+          "subsection_label": "On-chain proof & pairing verifiers",
+          "one_liner": "Contracts that verify ZK proofs or pairings.",
+          "what_it_is": "EVM pairing precompiles (BN254, BLS12-381) and Groth16/PLONK-KZG verifier contracts.",
+          "quantum_proof_requirement": "Verify hash-based proofs (STARK/FRI) or lattice proofs instead of pairing SNARKs.",
+          "primitive_at_risk": "pairings",
+          "status": "breakable",
+          "fix_maturity": "deployed",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "2.3",
+          "subsection_label": "Oracles & external data feeds",
+          "one_liner": "Signed off-chain data brought on-chain.",
+          "what_it_is": "Price/data feeds signed by operators (e.g., Chainlink OCR).",
+          "quantum_proof_requirement": "Reports signed/aggregated with PQ schemes. Shared keys make a break systemic.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "2.4",
+          "subsection_label": "Verifiable randomness & beacons",
+          "one_liner": "On-chain randomness with a proof.",
+          "what_it_is": "VRFs (EC-based) and threshold beacons (drand = threshold BLS).",
+          "quantum_proof_requirement": "PQ VRFs are research-stage; the robust option today is hash commit-reveal (RANDAO-style).",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "2.5",
+          "subsection_label": "Time-based ordering / VDF",
+          "one_liner": "A forced delay for fair or unbiased ordering.",
+          "what_it_is": "Verifiable delay functions.",
+          "quantum_proof_requirement": "Only hash-based/sequential VDFs are a PQ candidate (weaker verification); RSA-group and class-group VDFs are breakable.",
+          "primitive_at_risk": "depends",
+          "status": "depends",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Block Production & Proving",
+      "label": "How blocks get ordered, proven, and published",
+      "at_a_glance": "depends",
+      "applicability": "conditional",
+      "notes": "Architecture-specific: monolithic L1s (Solana, Bitcoin, Aptos/Sui) mark proof system, trusted setup, and DA commitment as N/A. KZG and pairings are the recurring vulnerability; STARK provers are PQ-safe.",
+      "subsections": [
+        {
+          "subsection_id": "3.1",
+          "subsection_label": "Sequencing & ordering",
+          "one_liner": "Who orders transactions into blocks.",
+          "what_it_is": "An L2 sequencer or L1 leader/proposer orders and usually signs the batch.",
+          "quantum_proof_requirement": "The batch/block signing key is PQ. (Monolithic L1 = the leader; a separate sequencer = N/A.)",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "3.2",
+          "subsection_label": "Proof system",
+          "one_liner": "The proof that execution was done correctly.",
+          "what_it_is": "Validity/fraud proofs of state transitions.",
+          "quantum_proof_requirement": "Use a hash-based system (STARK/FRI = safe); pairing SNARKs (Groth16, PLONK-KZG) are broken; lattice commitments emerging.",
+          "primitive_at_risk": "depends",
+          "status": "depends",
+          "fix_maturity": "deployed",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "3.3",
+          "subsection_label": "Trusted setup",
+          "one_liner": "A one-time ceremony some proof systems need.",
+          "what_it_is": "Powers-of-tau / KZG structured reference string.",
+          "quantum_proof_requirement": "Use a transparent setup (STARKs need none). KZG secret is recoverable by Shor from the public parameters regardless of honest deletion.",
+          "primitive_at_risk": "depends",
+          "status": "depends",
+          "fix_maturity": "deployed",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "3.4",
+          "subsection_label": "Data-availability commitment",
+          "one_liner": "Proof that block data was actually published.",
+          "what_it_is": "The commitment letting anyone reconstruct state.",
+          "quantum_proof_requirement": "Hash-based commitment (Merkle/NMT = safe, e.g. Celestia); KZG-based DA (Ethereum blobs, EigenDA, Avail) is broken.",
+          "primitive_at_risk": "depends",
+          "status": "depends",
+          "fix_maturity": "deployed",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "3.5",
+          "subsection_label": "State commitment",
+          "one_liner": "The accumulator committing to all chain state.",
+          "what_it_is": "The state tree.",
+          "quantum_proof_requirement": "Hash-based tree (Merkle-Patricia, binary Merkle = safe); EC vector commitments (Verkle/IPA) are broken.",
+          "primitive_at_risk": "depends",
+          "status": "depends",
+          "fix_maturity": "deployed",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "3.6",
+          "subsection_label": "Execution / VM",
+          "one_liner": "Running the transactions themselves.",
+          "what_it_is": "The virtual machine executing logic.",
+          "quantum_proof_requirement": "Nothing of its own; signature/pairing checks belong to Apps & Inputs.",
+          "primitive_at_risk": "hash",
+          "status": "safe",
+          "fix_maturity": "none",
+          "applicability": "conditional"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Consensus, Finality & Cross-chain",
+      "label": "How the network agrees, and how chains talk",
+      "at_a_glance": "breakable",
+      "applicability": "common",
+      "notes": "Shared trust pattern: verify a set of signatures from a validator set or committee, then accept state. BLS aggregation has no clean PQ analog (biggest lift). On a monolithic L1, settlement = consensus (N/A).",
+      "subsections": [
+        {
+          "subsection_id": "4.1",
+          "subsection_label": "Consensus & finality signatures",
+          "one_liner": "Signatures that agree on and finalize blocks.",
+          "what_it_is": "Validator votes/attestations, finality-gadget votes (FFG=BLS, GRANDPA=Ed25519, BEEFY=ECDSA), proposer auth.",
+          "quantum_proof_requirement": "PQ validator signatures plus a PQ way to aggregate them (no BLS drop-in; hash-based sigs + SNARK aggregation, prototype).",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "prototype",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "4.2",
+          "subsection_label": "Light clients & sync committees",
+          "one_liner": "Cheap verification of another chain's headers.",
+          "what_it_is": "A small signing set whose headers light clients trust (Ethereum sync committee = BLS).",
+          "quantum_proof_requirement": "PQ header signatures, or hash-based/STARK consensus proofs.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "prototype",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "4.3",
+          "subsection_label": "Settlement / L1 anchoring",
+          "one_liner": "An L2 posting its proof/state to a base chain.",
+          "what_it_is": "The L2's canonical bridge: L1 verifier contract + operator authorization.",
+          "quantum_proof_requirement": "PQ verifier + operator keys; inherits the base chain's crypto. (Monolithic L1 = N/A.)",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "prototype",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "4.4",
+          "subsection_label": "Bridges & cross-chain messaging",
+          "one_liner": "Moving assets and messages across chains.",
+          "what_it_is": "External committees/MPC (Wormhole, LayerZero) or light-client verification (IBC).",
+          "quantum_proof_requirement": "PQ committee signatures or PQ light-client verification. Crypto's most-hacked surface.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "common"
+        },
+        {
+          "subsection_id": "4.5",
+          "subsection_label": "Restaking / AVS attestations",
+          "one_liner": "Borrowed security from a restaked operator set.",
+          "what_it_is": "Operators (EigenLayer, Symbiotic) sign attestations securing off-chain services, usually BLS.",
+          "quantum_proof_requirement": "PQ operator signatures.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "4.6",
+          "subsection_label": "Payment channels & conditional transfers",
+          "one_liner": "Off-chain transfers and cross-chain swaps.",
+          "what_it_is": "HTLCs/Lightning, adaptor signatures, atomic swaps.",
+          "quantum_proof_requirement": "PQ signatures, and the base chain must support them; can't migrate without the L1's signature upgrade.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "4.7",
+          "subsection_label": "MEV / builder-relay (PBS)",
+          "one_liner": "The block-building market's signatures.",
+          "what_it_is": "MEV-Boost relays, builder/proposer commitments.",
+          "quantum_proof_requirement": "PQ relay/builder/proposer signatures.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Networking & Confidentiality",
+      "label": "The wires between the computers",
+      "at_a_glance": "breakable",
+      "applicability": "universal",
+      "notes": "A public ledger's data isn't secret, so harvest-now-decrypt-later mainly threatens private data, transport, node impersonation, and retroactive de-anonymization. Migrates with the broader PQ-TLS rollout.",
+      "subsections": [
+        {
+          "subsection_id": "5.1",
+          "subsection_label": "Node-to-node transport (P2P)",
+          "one_liner": "Encrypted links between nodes.",
+          "what_it_is": "TLS / QUIC / Noise gossip channels.",
+          "quantum_proof_requirement": "PQ/hybrid key-exchange (ML-KEM, e.g. X25519MLKEM768).",
+          "primitive_at_risk": "encryption",
+          "status": "breakable",
+          "fix_maturity": "deployed",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "5.2",
+          "subsection_label": "Node identity keys",
+          "one_liner": "Keys that identify peers and validators.",
+          "what_it_is": "libp2p peer IDs, validator network identity.",
+          "quantum_proof_requirement": "PQ node identity keys.",
+          "primitive_at_risk": "signatures",
+          "status": "breakable",
+          "fix_maturity": "standardized",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "5.3",
+          "subsection_label": "RPC / API & client transport",
+          "one_liner": "Wallet/dapp to node connections.",
+          "what_it_is": "HTTPS/TLS to RPC providers, WalletConnect relays.",
+          "quantum_proof_requirement": "PQ/hybrid TLS on RPC endpoints and relays.",
+          "primitive_at_risk": "encryption",
+          "status": "breakable",
+          "fix_maturity": "deployed",
+          "applicability": "universal"
+        },
+        {
+          "subsection_id": "5.4",
+          "subsection_label": "On-chain key agreement & stealth addresses",
+          "one_liner": "Shared secrets derived on-chain.",
+          "what_it_is": "ECDH-based stealth addresses (ERC-5564) and similar key agreement.",
+          "quantum_proof_requirement": "PQ key-encapsulation (ML-KEM); HNDL here retroactively de-anonymizes past activity.",
+          "primitive_at_risk": "encryption",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        },
+        {
+          "subsection_id": "5.5",
+          "subsection_label": "Application-layer encryption & privacy",
+          "one_liner": "Encrypted data, memos, and private-tx systems.",
+          "what_it_is": "Encrypted mempools (Shutter = pairing IBE + DKG), privacy chains, off-chain encrypted stores.",
+          "quantum_proof_requirement": "PQ encryption/threshold schemes; FHE (lattice) is already PQ, but pairing-SNARK wrappers may not be.",
+          "primitive_at_risk": "encryption",
+          "status": "breakable",
+          "fix_maturity": "research",
+          "applicability": "conditional"
+        }
+      ]
+    }
+  ]
+}
