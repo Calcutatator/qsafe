@@ -4,9 +4,11 @@ A concise, information-first breakdown of how quantum-proof a blockchain is. It 
 
 **Live:** https://calcutatator.github.io/qsafe/
 
-> v1 is the generalized model. Per-chain scorecards come next.
+Two tabs:
+- **Principles** — the generalized model (5 cores → 30 components).
+- **Projects** — real chains graded against the model, each with a quantum-proof %. (Starknet assessed; Ethereum, Solana, Bitcoin queued.)
 
-This is a monorepo: the website lives at the repo root, and the underlying taxonomy data + reference docs live alongside it so they version together.
+This is a monorepo: the website lives at the repo root, and the underlying taxonomy + project data + reference docs live alongside it so they version together.
 
 ## The app
 
@@ -18,7 +20,9 @@ Zero-build static site — no dependencies, no toolchain.
   python3 -m http.server 8000   # then open http://localhost:8000
   ```
 
-Three deep-linkable views: `#/` (the 5 cores) · `#/core/3` (one core's components) · `#/component/3.4` (a single component in full).
+Deep-linkable routes:
+- **Principles:** `#/` (the 5 cores) · `#/core/3` (one core) · `#/component/3.4` (one component)
+- **Projects:** `#/projects` (the list) · `#/projects/starknet` (a project) · `#/projects/starknet/core/3` · `#/projects/starknet/component/3.2`
 
 ## The data
 
@@ -43,11 +47,23 @@ Edit `data/taxonomy.json` (canonical), then regenerate the browser copy:
 
 Served over HTTP the app reads the JSON directly; the `.js` copy is only the `file://` fallback.
 
+Project assessments live in `data/projects/` — `index.json` (the list) plus one `<id>.json` per project. To add a project: copy an existing `<id>.json`, set each component's verdict (`pass` / `fail` / `na`) with a `scheme` and a `why`, add it to `index.json`, then regenerate the `file://` bundle:
+
+```sh
+python3 - <<'PY'
+import json
+base = "data/projects"; idx = json.load(open(f"{base}/index.json"))
+a = {p["id"]: json.load(open(f"{base}/{p['id']}.json")) for p in idx["projects"] if p.get("status") == "assessed"}
+open(f"{base}/bundle.js", "w").write("window.QSAFE_PROJECTS = " + json.dumps({"index": idx["projects"], "assessments": a}, ensure_ascii=False) + ";\n")
+PY
+```
+
 ## Repo layout
 
 ```
 index.html  styles.css  app.js   the site (GitHub Pages serves it from the repo root)
 data/                            canonical taxonomy (JSON/CSV) + window.TAXONOMY copy
+data/projects/                   per-project assessments (index.json + <id>.json + bundle.js)
 docs/                            taxonomy, framework, schema, component-map.svg
 ```
 
