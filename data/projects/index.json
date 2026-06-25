@@ -2,6 +2,7 @@
   "projects": [
     { "id": "starknet", "name": "Starknet", "type": "Validity rollup (L2)", "status": "assessed", "reviewed": "2026-06-24" },
     { "id": "ethereum", "name": "Ethereum", "type": "L1 + rollup settlement layer", "status": "assessed", "reviewed": "2026-06-24" },
+    { "id": "zcash", "name": "Zcash", "type": "Privacy L1 (PoW UTXO)", "status": "assessed", "reviewed": "2026-06-24" },
     { "id": "solana", "name": "Solana", "type": "Monolithic L1", "status": "queued" },
     { "id": "bitcoin", "name": "Bitcoin", "type": "Monolithic UTXO L1", "status": "queued" }
   ]
