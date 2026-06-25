@@ -317,3 +317,12 @@ a.proj-row:hover { border-color: var(--border-strong); background: var(--surface
 .tag--inherited { border-style: dashed; text-transform: none; letter-spacing: 0; font-weight: 500; }
 a.tag--inherited:hover { color: var(--text); border-color: var(--text); }
 
+/* ============ v2.2: contribute tab ============ */
+.contribute { max-width: 72ch; }
+.contribute__h { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 .7rem; }
+.contribute__steps { margin: 0 0 1.4rem; padding-left: 1.3rem; display: flex; flex-direction: column; gap: .65rem; }
+.contribute__steps li { padding-left: .2rem; }
+.contribute code { font-family: var(--mono); font-size: .85em; background: var(--surface-2); border: 1px solid var(--border); padding: .05em .35em; border-radius: 4px; }
+.contribute__links { display: flex; flex-wrap: wrap; gap: .9rem 1.6rem; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-weight: 600; font-size: .9rem; }
+.contribute__note { margin: 1rem 0 0; font-size: .85rem; }
+

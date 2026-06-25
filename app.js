@@ -469,6 +469,33 @@
     };
   }
 
+  function renderContribute() {
+    var repo = "https://github.com/Calcutatator/qsafe";
+    function link(href, text) { return '<a href="' + href + '" target="_blank" rel="noopener">' + text + "</a>"; }
+    var html =
+      '<section class="intro">' +
+        "<h1>Contribute</h1>" +
+        '<p class="lede">qsafe is an open-source framework for transparency on the quantum resistance of blockchains and the products built on them. It’s maintained by one person — but contributions are open and encouraged. If you have a project to add, or a detail to correct, follow the pull-request flow below.</p>' +
+      "</section>" +
+      '<section class="contribute">' +
+        '<h2 class="contribute__h">The PR flow</h2>' +
+        '<ol class="contribute__steps">' +
+          "<li><strong>Copy the template.</strong> " + link(repo + "/blob/main/data/projects/_template.json", "<code>data/projects/_template.json</code>") + " lists all 30 components, each labelled.</li>" +
+          "<li><strong>Fill each component</strong> with a verdict (<code>pass</code> / <code>fail</code> / <code>na</code>) plus a scheme, a one-line reason, and sources. For a product built on a chain, set <code>parent</code> — it inherits that chain as its settlement layer.</li>" +
+          "<li><strong>Register it</strong> in " + link(repo + "/blob/main/data/projects/index.json", "<code>data/projects/index.json</code>") + ".</li>" +
+          "<li><strong>Validate &amp; build</strong> — run <code>python3 scripts/build_projects.py</code>; it checks everything and regenerates the data bundle.</li>" +
+          "<li><strong>Open a pull request.</strong> CI re-runs the check automatically, and a PR template walks you through it.</li>" +
+        "</ol>" +
+        '<div class="contribute__links">' +
+          link(repo + "/blob/main/CONTRIBUTING.md", "Full contributor guide &rarr;") +
+          link(repo, "GitHub repo &rarr;") +
+          link(repo + "/compare", "Open a pull request &rarr;") +
+        "</div>" +
+        '<p class="contribute__note muted">The five core sections and thirty components are fixed — contributions change project data, not the framework itself.</p>' +
+      "</section>";
+    return { html: html, crumbs: [{ label: "Contribute" }], title: "Contribute — qsafe", tab: "contribute" };
+  }
+
   // ---- chrome ----
   function setCrumbs(crumbs) {
     var parts = (crumbs || []).map(function (c) {
@@ -479,10 +506,10 @@
   }
 
   function setActiveTab(tab) {
-    var p = document.getElementById("tab-principles");
-    var pr = document.getElementById("tab-projects");
-    if (p) p.classList.toggle("is-active", tab !== "projects");
-    if (pr) pr.classList.toggle("is-active", tab === "projects");
+    [["tab-principles", "principles"], ["tab-projects", "projects"], ["tab-contribute", "contribute"]].forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el) el.classList.toggle("is-active", tab === pair[1]);
+    });
   }
 
   function render() {
@@ -501,6 +528,8 @@
       } else {
         view = renderProjectMissing(parts[1]);
       }
+    } else if (parts[0] === "contribute") {
+      view = renderContribute();
     } else if (parts[0] === "core" && BY_CORE[parts[1]]) {
       view = renderCore(BY_CORE[parts[1]]);
     } else if (parts[0] === "component" && BY_COMPONENT[parts[1]]) {
