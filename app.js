@@ -282,18 +282,24 @@
 
   // ============ PROJECTS views ============
   function renderProjectsList() {
-    var rows = PROJECTS_INDEX.map(function (p) {
+    function projRow(p, isChild) {
+      var cls = "proj-row" + (isChild ? " proj-row--child" : "");
       if (p.status === "assessed" && PROJECTS[p.id]) {
         var st = overallStats(PROJECTS[p.id]);
-        return '<a class="proj-row" href="#/projects/' + esc(p.id) + '">' +
+        return '<a class="' + cls + '" href="#/projects/' + esc(p.id) + '">' +
           '<span class="proj-row__body"><span class="proj-row__name">' + esc(p.name) + "</span>" +
           '<span class="proj-row__type">' + esc(p.type) + "</span></span>" +
           '<span class="proj-row__meta">' + pctEl(st.pct) + "</span></a>";
       }
-      return '<div class="proj-row proj-row--queued">' +
+      return '<div class="' + cls + ' proj-row--queued">' +
         '<span class="proj-row__body"><span class="proj-row__name">' + esc(p.name) + "</span>" +
         '<span class="proj-row__type">' + esc(p.type) + "</span></span>" +
         '<span class="proj-row__meta"><span class="proj-row__queued">Assessment queued</span></span></div>';
+    }
+    var rows = PROJECTS_INDEX.filter(function (p) { return !p.parent; }).map(function (p) {
+      var kids = PROJECTS_INDEX.filter(function (c) { return c.parent === p.id; })
+        .map(function (c) { return projRow(c, true); }).join("");
+      return projRow(p, false) + kids;
     }).join("");
 
     var html =
@@ -317,6 +323,11 @@
 
   function renderProject(project) {
     var st = overallStats(project);
+    var parentLabel = "";
+    if (project.parent) {
+      var par = PROJECTS_INDEX.filter(function (x) { return x.id === project.parent; })[0];
+      parentLabel = '<a class="product-of" href="#/projects/' + esc(project.parent) + '">&#9656; Product of ' + esc(par ? par.name : project.parent) + "</a>";
+    }
     var links = "";
     if (project.links) {
       var parts = [];
@@ -342,7 +353,7 @@
 
     var html =
       '<header class="proj-head">' +
-        '<div class="proj-head__top"><span class="page-head__id">' + esc(project.type) + "</span>" +
+        '<div class="proj-head__top">' + parentLabel + '<span class="page-head__id">' + esc(project.type) + "</span>" +
           (project.reviewed ? '<span class="page-head__id">reviewed ' + esc(project.reviewed) + "</span>" : "") + "</div>" +
         "<h1>" + esc(project.name) + "</h1>" +
         '<div class="proj-head__score">' + pctEl(st.pct, true) +
@@ -379,7 +390,7 @@
       var a = project.assessment[s.subsection_id] || { verdict: "unknown" };
       return '<a class="row" href="#/projects/' + esc(project.id) + "/component/" + esc(s.subsection_id) + '">' +
         '<span class="cell cell--id mono">' + esc(s.subsection_id) + "</span>" +
-        '<span class="cell cell--name"><span class="row__name">' + esc(s.subsection_label) + "</span>" +
+        '<span class="cell cell--name"><span class="row__name">' + esc(s.subsection_label) + (a.inherited ? ' <span class="tag tag--inherited">inherited</span>' : "") + "</span>" +
           '<span class="row__sub">' + esc(s.one_liner) + "</span></span>" +
         '<span class="cell cell--scheme">' + (a.scheme ? '<span class="scheme">' + esc(a.scheme) + "</span>" : '<span class="muted">—</span>') + "</span>" +
         '<span class="cell cell--verdict">' + verdictChip(a.verdict) + "</span></a>";
@@ -397,6 +408,12 @@
     var ref = BY_COMPONENT[sid];
     var core = ref.core, s = ref.sub;
     var a = project.assessment[sid] || { verdict: "unknown", why: "Not yet assessed." };
+
+    var inheritedTag = "";
+    if (a.inherited && project.parent) {
+      var ipar = PROJECTS_INDEX.filter(function (x) { return x.id === project.parent; })[0];
+      inheritedTag = '<a class="tag tag--inherited" href="#/projects/' + esc(project.parent) + '">inherited from ' + esc(ipar ? ipar.name : project.parent) + "</a>";
+    }
 
     var subs = core.subsections || [];
     var idx = subs.map(function (x) { return x.subsection_id; }).indexOf(sid);
@@ -428,7 +445,7 @@
         '<section class="block"><h2>What it is</h2><p>' + esc(s.what_it_is) + "</p></section>" +
         '<section class="block"><h2>What it takes to be quantum-proof</h2><p>' + esc(s.quantum_proof_requirement) + "</p></section>" +
         '<section class="block block--meta status-block">' +
-          '<div class="status-block__top"><h2>' + esc(project.name) + "’s status</h2>" + verdictChip(a.verdict) +
+          '<div class="status-block__top"><h2>' + esc(project.name) + "’s status</h2>" + verdictChip(a.verdict) + inheritedTag +
             (a.scheme ? '<span class="status-block__scheme">' + esc(a.scheme) + "</span>" : "") + "</div>" +
           '<p class="status-block__why">' + esc(a.why) + "</p>" + sources +
         "</section>" +

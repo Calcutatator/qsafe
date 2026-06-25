@@ -309,3 +309,11 @@ a.proj-row:hover { border-color: var(--border-strong); background: var(--surface
   .rows--proj .cell--scheme { order: 4; }
 }
 
+/* ============ v2.1: sub-projects (branches) ============ */
+.proj-row--child { margin-left: 1.6rem; }
+.proj-row--child .proj-row__name::before { content: "\21B3"; color: var(--muted); margin-right: .4rem; font-weight: 400; }
+.product-of { display: inline-flex; align-items: center; font-size: .8rem; font-weight: 600; color: var(--muted); margin-right: .25rem; }
+.product-of:hover { color: var(--link-hover); }
+.tag--inherited { border-style: dashed; text-transform: none; letter-spacing: 0; font-weight: 500; }
+a.tag--inherited:hover { color: var(--text); border-color: var(--text); }
+
