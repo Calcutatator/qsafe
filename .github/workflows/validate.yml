@@ -1,0 +1,23 @@
+name: Validate projects
+
+on:
+  pull_request:
+    paths:
+      - "data/**"
+      - "scripts/**"
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "scripts/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate project data and check the bundle is current
+        run: python3 scripts/build_projects.py --check

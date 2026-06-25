@@ -6,7 +6,7 @@ A concise, information-first breakdown of how quantum-proof a blockchain is. It 
 
 Two tabs:
 - **Principles** — the generalized model (5 cores → 30 components).
-- **Projects** — real chains graded against the model, each with a quantum-proof %. (Starknet assessed; Ethereum, Solana, Bitcoin queued.)
+- **Projects** — real chains and on-chain products graded against the model, each with a quantum-proof %. Products (e.g. a shielded pool) nest as branches under their host chain. (Starknet, Ethereum, Zcash + the STRK20 product assessed; Solana, Bitcoin queued.)
 
 This is a monorepo: the website lives at the repo root, and the underlying taxonomy + project data + reference docs live alongside it so they version together.
 
@@ -47,25 +47,31 @@ Edit `data/taxonomy.json` (canonical), then regenerate the browser copy:
 
 Served over HTTP the app reads the JSON directly; the `.js` copy is only the `file://` fallback.
 
-Project assessments live in `data/projects/` — `index.json` (the list) plus one `<id>.json` per project. To add a project: copy an existing `<id>.json`, set each component's verdict (`pass` / `fail` / `na`) with a `scheme` and a `why`, add it to `index.json`, then regenerate the `file://` bundle:
-
-```sh
-python3 - <<'PY'
-import json
-base = "data/projects"; idx = json.load(open(f"{base}/index.json"))
-a = {p["id"]: json.load(open(f"{base}/{p['id']}.json")) for p in idx["projects"] if p.get("status") == "assessed"}
-open(f"{base}/bundle.js", "w").write("window.QSAFE_PROJECTS = " + json.dumps({"index": idx["projects"], "assessments": a}, ensure_ascii=False) + ";\n")
-PY
-```
+Project assessments live in `data/projects/` — `index.json` (the list) plus one `<id>.json` per project, and `bundle.js` (the `file://` copy). Adding or editing a project is a data-only change validated by one script — see **[Contributing](#contributing)** below.
 
 ## Repo layout
 
 ```
 index.html  styles.css  app.js   the site (GitHub Pages serves it from the repo root)
 data/                            canonical taxonomy (JSON/CSV) + window.TAXONOMY copy
-data/projects/                   per-project assessments (index.json + <id>.json + bundle.js)
+data/projects/                   per-project assessments (index.json · <id>.json · _template.json · bundle.js)
 docs/                            taxonomy, framework, schema, component-map.svg
+scripts/build_projects.py        validates project data + regenerates the bundle
+.github/                         PR template + the "Validate projects" CI workflow
+CONTRIBUTING.md                  how to PR a project (humans + AI)
 ```
+
+## Contributing
+
+Projects are data, so contributing is just editing JSON and opening a PR — humans and AI agents alike. Full rules and worked examples are in **[CONTRIBUTING.md](CONTRIBUTING.md)**; the short version:
+
+1. **Copy the template** — `data/projects/_template.json` → `data/projects/<id>.json` (it lists all 30 components with label hints).
+2. **Fill each component** with a `verdict` (`pass` / `fail` / `na`) plus `scheme`, `why`, and `sources`. For a product built on a chain, set `"parent": "<chain-id>"` — it inherits the chain as Settlement and nests as a branch under it.
+3. **Register it** in `data/projects/index.json`.
+4. **Validate + build:** `python3 scripts/build_projects.py` — checks every project and regenerates `bundle.js`.
+5. **Open a PR.** The **Validate projects** GitHub Action re-runs `--check` automatically, and a PR template walks you through the checklist.
+
+Scoring conventions — *current-default-mainnet-reality*, *canonical-bridge-only* (4.4), *PoW = pass* (3.1/4.1), and *products inherit Settlement* (4.3) — are documented in CONTRIBUTING.md. The 5 cores / 30 components themselves are frozen.
 
 ## Deploy
 
