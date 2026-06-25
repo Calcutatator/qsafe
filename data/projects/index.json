@@ -1,9 +1,10 @@
 {
   "projects": [
     { "id": "starknet", "name": "Starknet", "type": "Validity rollup (L2)", "status": "assessed", "reviewed": "2026-06-24" },
-    { "id": "strk20", "name": "STRK20", "type": "Shielded token standard", "parent": "starknet", "status": "assessed", "reviewed": "2026-06-24" },
+    { "id": "strk20", "name": "STRK20", "type": "Shielded-token framework", "parent": "starknet", "status": "assessed", "reviewed": "2026-06-24" },
     { "id": "ethereum", "name": "Ethereum", "type": "L1 + rollup settlement layer", "status": "assessed", "reviewed": "2026-06-24" },
     { "id": "zcash", "name": "Zcash", "type": "Privacy L1 (PoW UTXO)", "status": "assessed", "reviewed": "2026-06-24" },
+    { "id": "ironwood", "name": "Ironwood", "type": "Shielded pool (Zcash NU7, pre-launch)", "parent": "zcash", "status": "assessed", "reviewed": "2026-06-25" },
     { "id": "solana", "name": "Solana", "type": "Monolithic L1", "status": "queued" },
     { "id": "bitcoin", "name": "Bitcoin", "type": "Monolithic UTXO L1", "status": "queued" }
   ]
