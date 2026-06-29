@@ -5,10 +5,10 @@
     "updated": "2026-06-22",
     "description": "A generalizable component taxonomy for assessing the quantum resistance of any blockchain. 5 core sections, 30 components, each with what it is and what it takes to be quantum-proof.",
     "lens": {
-      "signatures": "Broken by Shor (ECDSA, EdDSA, Schnorr, sr25519, BLS). Fix: ML-DSA / SLH-DSA / FN-DSA.",
-      "encryption": "Broken by Shor (RSA, ECDH, TLS, IBE); harvest-now-decrypt-later. Fix: ML-KEM.",
-      "pairings": "Pairing-based crypto (BLS, KZG) broken by Shor. The single most common root cause.",
-      "hash": "Only weakened by Grover (quadratic, barely parallelizes). 256-bit hashes stay safe.",
+      "signatures": "Who can act: Shor breaks today's common signature schemes (ECDSA, EdDSA, Schnorr, BLS). Fix: ML-DSA, SLH-DSA, or FN-DSA.",
+      "encryption": "Private messages: Shor breaks RSA and elliptic-curve key exchange (ECDH/TLS), so captured traffic can be decrypted later. Fix: ML-KEM.",
+      "pairings": "Compact signatures and proofs: Shor breaks pairing-based crypto such as BLS and KZG.",
+      "hash": "Fingerprints and Merkle trees: Grover only weakens hashes; 256-bit hashes still have a large safety margin.",
       "depends": "Can be built hash-based (safe) or pairing/EC-based (breakable); design decides."
     },
     "status_values": [
