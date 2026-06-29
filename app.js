@@ -576,7 +576,7 @@
               "<li><strong>Find the project file.</strong> Open <code>data/projects/&lt;project-id&gt;.json</code>. Use the " + link(repo + "/tree/main/data/projects", "project folder") + " if you are not sure of the id.</li>" +
               "<li><strong>Find the component id.</strong> Component ids are stable, like <code>1.3</code>. The full list is in " + link(repo + "/blob/main/docs/taxonomy.md", "the taxonomy") + ".</li>" +
               "<li><strong>Edit only that block.</strong> Update the component's <code>verdict</code>, <code>scheme</code>, <code>why</code>, and <code>sources</code>. Keep the reason short and source-backed.</li>" +
-              "<li><strong>Send the update.</strong> Open a PR from GitHub's editor; the automated check handles validation. If you only want to report the change, use the " + link(repo + "/issues/new?template=component-update.yml", "component update form") + " instead.</li>" +
+              "<li><strong>Send the update.</strong> Open a PR from " + link(repo + "/tree/main/data/projects", "GitHub's editor") + "; the automated check handles validation. If you only want to report the change, use the " + link(repo + "/issues/new?template=component-update.yml", "component update form") + " instead.</li>" +
             "</ol>" +
             '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Update qsafe <code>&lt;project&gt;</code> component <code>&lt;id&gt;</code>. Edit only that assessment block, cite sources, validate it, and open a PR.”</p>' +
           "</article>" +
