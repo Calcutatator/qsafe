@@ -41,6 +41,7 @@
   var BY_COMPONENT = {};
   var PROJECTS_INDEX = [];
   var PROJECTS = {};
+  var OPEN = {};
 
   // ---- helpers ----
   function esc(s) {
@@ -282,24 +283,41 @@
 
   // ============ PROJECTS views ============
   function renderProjectsList() {
-    function projRow(p, isChild) {
+    function metaCell(p) {
+      if (p.status === "assessed" && PROJECTS[p.id]) return pctEl(overallStats(PROJECTS[p.id]).pct);
+      return '<span class="proj-row__queued">Assessment queued</span>';
+    }
+    function leafRow(p, isChild) {
       var cls = "proj-row" + (isChild ? " proj-row--child" : "");
       if (p.status === "assessed" && PROJECTS[p.id]) {
-        var st = overallStats(PROJECTS[p.id]);
         return '<a class="' + cls + '" href="#/projects/' + esc(p.id) + '">' +
           '<span class="proj-row__body"><span class="proj-row__name">' + esc(p.name) + "</span>" +
           '<span class="proj-row__type">' + esc(p.type) + "</span></span>" +
-          '<span class="proj-row__meta">' + pctEl(st.pct) + "</span></a>";
+          '<span class="proj-row__meta">' + metaCell(p) + "</span></a>";
       }
       return '<div class="' + cls + ' proj-row--queued">' +
         '<span class="proj-row__body"><span class="proj-row__name">' + esc(p.name) + "</span>" +
         '<span class="proj-row__type">' + esc(p.type) + "</span></span>" +
-        '<span class="proj-row__meta"><span class="proj-row__queued">Assessment queued</span></span></div>';
+        '<span class="proj-row__meta">' + metaCell(p) + "</span></div>";
     }
     var rows = PROJECTS_INDEX.filter(function (p) { return !p.parent; }).map(function (p) {
-      var kids = PROJECTS_INDEX.filter(function (c) { return c.parent === p.id; })
-        .map(function (c) { return projRow(c, true); }).join("");
-      return projRow(p, false) + kids;
+      var kids = PROJECTS_INDEX.filter(function (c) { return c.parent === p.id; });
+      if (!kids.length) return leafRow(p, false);
+      var open = !!OPEN[p.id];
+      var n = kids.length;
+      var header =
+        '<div class="proj-row proj-row--chain">' +
+          '<a class="chain-link" href="#/projects/' + esc(p.id) + '">' +
+            '<span class="proj-row__name">' + esc(p.name) + "</span>" +
+            '<span class="proj-row__type">' + esc(p.type) + "</span></a>" +
+          '<span class="proj-row__meta">' + metaCell(p) + "</span>" +
+          '<button class="proj-toggle" type="button" data-toggle="' + esc(p.id) + '" aria-expanded="' + (open ? "true" : "false") + '" aria-controls="kids-' + esc(p.id) + '">' +
+            '<span class="proj-toggle__count">' + n + (n === 1 ? " product" : " products") + "</span>" +
+            '<span class="proj-toggle__caret" aria-hidden="true">&#9656;</span></button>' +
+        "</div>";
+      var children = '<div class="proj-children" id="kids-' + esc(p.id) + '"' + (open ? "" : " hidden") + ">" +
+        kids.map(function (c) { return leafRow(c, true); }).join("") + "</div>";
+      return header + children;
     }).join("");
 
     var html =
@@ -307,9 +325,9 @@
         "<h1>Projects</h1>" +
         '<p class="lede">Real chains and products graded against the 30 components. ' +
         "A component <strong>passes</strong> if it meets that component’s “what it takes to be quantum-proof” bar; " +
-        "the percentage is the share of <em>applicable</em> components that pass (N/A excluded).</p>" +
+        "the percentage is the share of <em>applicable</em> components that pass (N/A excluded). Chains with products expand to reveal them.</p>" +
       "</section>" +
-      '<ol class="proj-list" aria-label="Projects">' + rows + "</ol>";
+      '<div class="proj-list" aria-label="Projects">' + rows + "</div>";
 
     return { html: html, crumbs: [{ label: "Projects" }], title: "Projects — qsafe", tab: "projects" };
   }
@@ -590,6 +608,16 @@
     var ver = document.getElementById("ver");
     if (ver) ver.textContent = META.version || "";
     window.addEventListener("hashchange", render);
+    app.addEventListener("click", function (e) {
+      var btn = e.target.closest && e.target.closest(".proj-toggle");
+      if (!btn) return;
+      e.preventDefault();
+      var id = btn.getAttribute("data-toggle");
+      OPEN[id] = !OPEN[id];
+      btn.setAttribute("aria-expanded", OPEN[id] ? "true" : "false");
+      var box = document.getElementById("kids-" + id);
+      if (box) { if (OPEN[id]) box.removeAttribute("hidden"); else box.setAttribute("hidden", ""); }
+    });
     render();
   });
 })();
