@@ -142,11 +142,12 @@
 
     var legend =
       '<div class="legend">' +
-        '<div class="legend__group"><span class="legend__title">Status</span>' +
+        '<div class="legend__group"><span class="legend__title">General case</span>' +
           statusChip("breakable") + statusChip("depends") + statusChip("safe") + "</div>" +
         '<div class="legend__group"><span class="legend__title">Fix maturity</span>' +
           '<span class="legend__scale">' + maturityEl("research") + " &rarr; " + maturityEl("standardized") + "</span></div>" +
-      "</div>";
+      "</div>" +
+      '<p class="legend-note">“General case” is the typical quantum status of each component as built on most chains today — the framework’s map of where quantum risk lives. Specific projects are graded on the <a href="#/projects">Projects</a> tab.</p>';
 
     var cores = CORES.map(function (c) {
       return '<a class="core-row" href="#/core/' + esc(c.id) + '">' +
@@ -195,7 +196,7 @@
         '<span class="cell cell--id">#</span>' +
         '<span class="cell cell--name">Component</span>' +
         '<span class="cell cell--prim">Primitive</span>' +
-        '<span class="cell cell--status">Status</span>' +
+        '<span class="cell cell--status">General case</span>' +
         '<span class="cell cell--fix">Fix</span>' +
       "</div>";
 
@@ -260,7 +261,7 @@
         '<section class="block block--meta">' +
           '<div class="metagrid">' +
             '<div><span class="metagrid__k">Primitive at risk</span><span class="metagrid__v">' + esc(primName) + "</span></div>" +
-            '<div><span class="metagrid__k">Status</span><span class="metagrid__v">' + statusChip(s.status) + "</span></div>" +
+            '<div><span class="metagrid__k">General case</span><span class="metagrid__v">' + statusChip(s.status) + "</span></div>" +
             '<div><span class="metagrid__k">Fix maturity</span><span class="metagrid__v">' + maturityEl(s.fix_maturity) + "</span></div>" +
             '<div><span class="metagrid__k">Applies to</span><span class="metagrid__v">' + applicTag(s.applicability) + "</span></div>" +
           "</div>" +
