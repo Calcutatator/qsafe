@@ -151,6 +151,15 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-ra
 .lens__row:first-child { border-top: 0; }
 .lens__key { font-weight: 650; }
 .lens__val { color: var(--muted); }
+.lens code { font-family: var(--mono); font-size: .85em; }
+
+.crawler-block { margin: 0 0 1.75rem; }
+.crawler-block h2 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin: 0 0 .7rem;
+}
+.crawler-core { list-style: none; }
+.crawler-flow { max-width: 74ch; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; align-items: center; padding-top: .25rem; }
 .legend__group { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
@@ -356,13 +365,27 @@ a.proj-row:hover { border-color: var(--border-strong); background: var(--surface
 a.tag--inherited:hover { color: var(--text); border-color: var(--text); }
 
 /* ============ v2.2: contribute tab ============ */
-.contribute { max-width: 72ch; }
+.contribute { max-width: none; }
 .contribute__h { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 .7rem; }
 .contribute__steps { margin: 0 0 1.4rem; padding-left: 1.3rem; display: flex; flex-direction: column; gap: .65rem; }
 .contribute__steps li { padding-left: .2rem; }
 .contribute code { font-family: var(--mono); font-size: .85em; background: var(--surface-2); border: 1px solid var(--border); padding: .05em .35em; border-radius: 4px; }
 .contribute__links { display: flex; flex-wrap: wrap; gap: .9rem 1.6rem; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-weight: 600; font-size: .9rem; }
 .contribute__note { margin: 1rem 0 0; font-size: .85rem; }
+.contribute-routes { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+.contribute-route {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); padding: 1rem;
+}
+.contribute-route__top { margin-bottom: .65rem; }
+.contribute-route__k { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .25rem; }
+.contribute-route h2 { font-size: 1.08rem; line-height: 1.25; margin: 0; }
+.contribute-route__lede { margin: 0 0 .9rem; color: var(--muted); font-size: .9rem; }
+.agent-handoff {
+  margin: 1rem 0 0; padding-top: .85rem; border-top: 1px solid var(--border);
+  color: var(--muted); font-size: .85rem;
+}
+.agent-handoff span { display: block; color: var(--text); font-weight: 650; margin-bottom: .25rem; }
 
 /* ============ v2.3: collapsible chain groups ============ */
 .proj-row--chain { display: flex; align-items: center; gap: 1rem; }
@@ -384,4 +407,5 @@ a.tag--inherited:hover { color: var(--text); border-color: var(--text); }
 @media (max-width: 640px) {
   .proj-row--chain { flex-wrap: wrap; }
   .chain-link { flex: 1 1 100%; }
+  .contribute-routes { grid-template-columns: 1fr; }
 }

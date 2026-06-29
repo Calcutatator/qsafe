@@ -2,13 +2,21 @@
 
 A concise, information-first breakdown of how quantum-proof a blockchain is. It splits a chain into **5 core sections** and **30 components**, each rated for its quantum status (breakable / depends / safe), the crypto primitive at risk, and how mature the fix is.
 
-**Live:** https://calcutatator.github.io/qsafe/
+**Live:** https://qsafe.info/ (also available at https://calcutatator.github.io/qsafe/)
 
 Two tabs:
 - **Principles** — the generalized model (5 cores → 30 components).
 - **Projects** — real chains and on-chain products graded against the model, each with a quantum-proof %. Products (e.g. a shielded pool) nest as branches under their host chain. (Starknet, Ethereum, Zcash + the STRK20 product assessed; Solana, Bitcoin queued.)
 
 This is a monorepo: the website lives at the repo root, and the underlying taxonomy + project data + reference docs live alongside it so they version together.
+
+## For agents and crawlers
+
+This repo is designed to be readable without a build step or browser automation:
+
+- **Site readers / crawlers:** start with [`llms.txt`](llms.txt), [`data/taxonomy.json`](data/taxonomy.json), and [`data/projects/index.json`](data/projects/index.json). The HTML page also includes a static summary before JavaScript renders the interactive app.
+- **Coding agents:** read [`AGENTS.md`](AGENTS.md) before editing. It explains the fixed framework, scoring rules, validation commands, component-update flow, and project-upload flow.
+- **Project contributors:** read [`CONTRIBUTING.md`](CONTRIBUTING.md). For small fixes, update one component block in `data/projects/<id>.json` or use the component update form. For new chains/products, copy [`data/projects/_template.json`](data/projects/_template.json), fill all 30 components, register the project in [`data/projects/index.json`](data/projects/index.json), and open a PR.
 
 ## The app
 
@@ -59,17 +67,32 @@ docs/                            taxonomy, framework, schema, component-map.svg
 scripts/build_projects.py        validates project data + regenerates the bundle
 .github/                         PR template + the "Validate projects" CI workflow
 CONTRIBUTING.md                  how to PR a project (humans + AI)
+AGENTS.md                        operational guide for coding agents
+llms.txt                         concise site map for language models and crawlers
+robots.txt  sitemap.xml          crawler discovery files
 ```
 
 ## Contributing
 
-Projects are data, so contributing is just editing JSON and opening a PR — humans and AI agents alike. Full rules and worked examples are in **[CONTRIBUTING.md](CONTRIBUTING.md)**; the short version:
+Projects are data, so contributing is just editing JSON and opening a PR — humans and AI agents alike. Full rules and worked examples are in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+
+There are two normal contribution routes:
+
+### Update one component
+
+Use this for a focused correction such as "Ethereum component 1.3 is now post-quantum."
+
+1. Open `data/projects/<project-id>.json`.
+2. Find the component id, such as `1.3`.
+3. Update that component's `verdict`, `scheme`, `why`, and `sources`.
+4. Open a PR, or use the GitHub component update form if you do not want to edit JSON.
+
+### Add a chain or product
 
 1. **Copy the template** — `data/projects/_template.json` → `data/projects/<id>.json` (it lists all 30 components with label hints).
 2. **Fill each component** with a `verdict` (`pass` / `fail` / `na`) plus `scheme`, `why`, and `sources`. For a product built on a chain, set `"parent": "<chain-id>"` — it inherits the chain as Settlement and nests as a branch under it.
 3. **Register it** in `data/projects/index.json`.
-4. **Validate + build:** `python3 scripts/build_projects.py` — checks every project and regenerates `bundle.js`.
-5. **Open a PR.** The **Validate projects** GitHub Action re-runs `--check` automatically, and a PR template walks you through the checklist.
+4. **Open a PR.** The **Validate projects** GitHub Action checks the data. Agents and local contributors can run `python3 scripts/build_projects.py` before sending.
 
 Scoring conventions — *current-default-mainnet-reality*, *canonical-bridge-only* (4.4), *PoW = pass* (3.1/4.1), and *products inherit Settlement* (4.3) — are documented in CONTRIBUTING.md. The 5 cores / 30 components themselves are frozen.
 

@@ -1,23 +1,28 @@
-<!-- Thanks for contributing to qsafe! See CONTRIBUTING.md for the full flow. -->
+<!-- Thanks for contributing to qsafe. See CONTRIBUTING.md for the full flow. -->
 
-## What does this PR change?
+## Contribution type
 
-- [ ] New chain assessment
-- [ ] New product / sub-project (set `parent`)
-- [ ] Correction to an existing project
-- [ ] App / docs / other
+- [ ] Update one component for an existing chain/product
+- [ ] Add a new chain or product
+- [ ] Docs / app / other
 
-**Project(s):** <!-- e.g. solana — or ironwood (product of zcash) -->
+## What changed?
 
-## Checklist
+Project:
+Component id, if this is a component update:
 
-- [ ] Copied `data/projects/_template.json` (new) or edited an existing `data/projects/<id>.json`
-- [ ] Every component has a `verdict` (`pass` / `fail` / `na`); each `pass`/`fail` has a one-line `why` and at least one `sources` link
-- [ ] Followed the scoring rules in [CONTRIBUTING.md](../CONTRIBUTING.md) — default-mainnet-reality · canonical-bridge-only (4.4) · PoW = pass · products inherit Settlement (4.3)
-- [ ] New project is registered in `data/projects/index.json` (with `parent` if it's a sub-project)
-- [ ] Ran `python3 scripts/build_projects.py` and committed the regenerated `data/projects/bundle.js`
-- [ ] The **Validate projects** check is green
+Short summary:
 
 ## Sources
 
-<!-- List the primary sources behind the verdicts (specs, audits, official docs). -->
+<!-- List the primary sources behind the change: specs, docs, audits, standards, official posts, or papers. -->
+
+-
+
+## Checklist
+
+- [ ] I scored current default mainnet behavior, not a roadmap
+- [ ] For a component update, I edited only the relevant component block
+- [ ] For a new project, I filled all 30 components and registered it in `data/projects/index.json`
+- [ ] For a product, I set `parent` and handled Settlement `4.3`
+- [ ] If working locally or with an agent, I ran `python3 scripts/build_projects.py`

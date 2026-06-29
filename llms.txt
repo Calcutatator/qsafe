@@ -1,0 +1,68 @@
+# qsafe
+
+> qsafe is a concise framework and data set for assessing how quantum-resistant a blockchain or on-chain product is. It uses 5 fixed core sections and 30 fixed components, each mapped to the crypto primitive at risk and the requirement for being quantum-proof.
+
+Canonical site: https://qsafe.info/
+Repository: https://github.com/Calcutatator/qsafe
+License: MIT
+
+## Best entry points
+
+- [README](https://github.com/Calcutatator/qsafe/blob/main/README.md): repo shape, app routes, and data layout.
+- [Framework reasoning](https://github.com/Calcutatator/qsafe/blob/main/docs/framework.md): threat model, why the 5 cores exist, and source-backed reasoning.
+- [Taxonomy docs](https://github.com/Calcutatator/qsafe/blob/main/docs/taxonomy.md): human-readable list of the 5 cores and 30 components.
+- [Schema](https://github.com/Calcutatator/qsafe/blob/main/docs/schema.md): fields used by taxonomy and assessment files.
+- [Contributing](https://github.com/Calcutatator/qsafe/blob/main/CONTRIBUTING.md): how to add or correct project assessments.
+- [Agent guide](https://github.com/Calcutatator/qsafe/blob/main/AGENTS.md): operational instructions for coding agents.
+
+## Machine-readable data
+
+- [Taxonomy JSON](https://qsafe.info/data/taxonomy.json): canonical 5-core / 30-component model.
+- [Taxonomy CSV](https://qsafe.info/data/taxonomy.csv): flat component table.
+- [Project index JSON](https://qsafe.info/data/projects/index.json): assessed and queued projects.
+- [Project template](https://github.com/Calcutatator/qsafe/blob/main/data/projects/_template.json): copy this to add a new chain or product.
+
+## Current project assessment files
+
+- [Starknet](https://qsafe.info/data/projects/starknet.json)
+- [STRK20](https://qsafe.info/data/projects/strk20.json), a product of Starknet
+- [Ethereum](https://qsafe.info/data/projects/ethereum.json)
+- [Zcash](https://qsafe.info/data/projects/zcash.json)
+- [Ironwood](https://qsafe.info/data/projects/ironwood.json), a product of Zcash
+
+## Framework summary
+
+The five core sections are:
+
+1. Keys & Accounts — account signing, custody, threshold signing, account abstraction, passkeys, identity, governance.
+2. Apps & Inputs — contract signature checks, pairing/proof verifiers, oracles, randomness, VDF/time ordering.
+3. Block Production & Proving — sequencing, proof systems, trusted setup, data availability, state commitments, execution/VM.
+4. Consensus, Finality & Cross-chain — consensus signatures, light clients, settlement, bridges, restaking/AVS, payment channels, MEV/PBS.
+5. Networking & Confidentiality — P2P transport, node identity, RPC/client transport, key agreement, application-layer encryption.
+
+The core crypto lens:
+
+- Shor breaks ECDSA, EdDSA, Schnorr, sr25519, BLS, RSA/ECDH, pairings, KZG, and pairing-based SNARK assumptions.
+- Grover only quadratically weakens hashing; 256-bit hash-based constructions are usually acceptable.
+- A component passes only when the deployed default uses post-quantum-secure crypto, not when a roadmap says it might later.
+
+## Contribution routes
+
+### Update one component
+
+1. Open `data/projects/<project-id>.json`.
+2. Find the stable component id, such as `1.3`.
+3. Edit only that component's `verdict`, `scheme`, `why`, and `sources`.
+4. Open a PR. If the user does not want to edit JSON, send them to the component update form.
+5. Agents and local contributors should run `python3 scripts/build_projects.py`; web editors can rely on PR validation.
+
+### Add a chain or product
+
+1. Read `docs/framework.md`, `docs/taxonomy.md`, `CONTRIBUTING.md`, and `AGENTS.md`.
+2. Copy `data/projects/_template.json` to `data/projects/<id>.json`.
+3. Fill every component `1.1` through `5.5` with `verdict`, `scheme`, `why`, and `sources`.
+4. Register the project in `data/projects/index.json`.
+5. Open a PR with the project JSON and index update.
+6. Agents and local contributors should run `python3 scripts/build_projects.py`; the generated bundle is refreshed automatically after merge.
+
+For products built on a host chain, set `parent` in both the project JSON and index. Settlement component `4.3` inherits the host chain.

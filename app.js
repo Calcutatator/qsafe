@@ -554,19 +554,37 @@
     var html =
       '<section class="intro">' +
         "<h1>Contribute</h1>" +
-        '<p class="lede">qsafe is an open-source framework for transparency on the quantum resistance of blockchains and the products built on them. It’s maintained by one person — but contributions are open and encouraged. If you have a project to add, or a detail to correct, follow the pull-request flow below.</p>' +
+        '<p class="lede">qsafe is an open-source scorecard for the quantum resistance of blockchains and the products built on them. Most contributions are either a full project assessment, or a small update to one component of an existing project.</p>' +
       "</section>" +
       '<section class="contribute">' +
-        '<h2 class="contribute__h">The PR flow</h2>' +
-        '<ol class="contribute__steps">' +
-          "<li><strong>Copy the template.</strong> " + link(repo + "/blob/main/data/projects/_template.json", "<code>data/projects/_template.json</code>") + " lists all 30 components, each labelled.</li>" +
-          "<li><strong>Fill each component</strong> with a verdict (<code>pass</code> / <code>fail</code> / <code>na</code>) plus a scheme, a one-line reason, and sources. For a product built on a chain, set <code>parent</code> — it inherits that chain as its settlement layer.</li>" +
-          "<li><strong>Register it</strong> in " + link(repo + "/blob/main/data/projects/index.json", "<code>data/projects/index.json</code>") + ".</li>" +
-          "<li><strong>Validate &amp; build</strong> — run <code>python3 scripts/build_projects.py</code>; it checks everything and regenerates the data bundle.</li>" +
-          "<li><strong>Open a pull request.</strong> CI re-runs the check automatically, and a PR template walks you through it.</li>" +
-        "</ol>" +
+        '<div class="contribute-routes">' +
+          '<article class="contribute-route">' +
+            '<div class="contribute-route__top"><span class="contribute-route__k">Full assessment</span><h2>Add a chain or product</h2></div>' +
+            '<p class="contribute-route__lede">Use this when a blockchain, L2, bridge, app, or product is missing from qsafe.</p>' +
+            '<ol class="contribute__steps">' +
+              "<li><strong>Copy the scorecard.</strong> Start from " + link(repo + "/blob/main/data/projects/_template.json", "<code>data/projects/_template.json</code>") + " and save it as <code>data/projects/&lt;id&gt;.json</code>.</li>" +
+              "<li><strong>Fill all 30 components.</strong> For each one, choose <code>pass</code>, <code>fail</code>, or <code>na</code>, then add the scheme, a short reason, and sources.</li>" +
+              "<li><strong>Register the project.</strong> Add it to " + link(repo + "/blob/main/data/projects/index.json", "<code>data/projects/index.json</code>") + ". For a product, set <code>parent</code> to the host chain.</li>" +
+              "<li><strong>Send it.</strong> Open a PR. The automated check validates the data; agents and local contributors can run <code>python3 scripts/build_projects.py</code> before sending.</li>" +
+            "</ol>" +
+            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Add <code>&lt;project&gt;</code> to qsafe. Follow <code>AGENTS.md</code>, fill all 30 components, run <code>python3 scripts/build_projects.py</code>, and open a PR.”</p>' +
+          "</article>" +
+          '<article class="contribute-route">' +
+            '<div class="contribute-route__top"><span class="contribute-route__k">Small update</span><h2>Update one component</h2></div>' +
+            '<p class="contribute-route__lede">Use this when one component changed or is wrong, for example “project X component 1.3 is now post-quantum.” No local setup needed.</p>' +
+            '<ol class="contribute__steps">' +
+              "<li><strong>Find the project file.</strong> Open <code>data/projects/&lt;project-id&gt;.json</code>. Use the " + link(repo + "/tree/main/data/projects", "project folder") + " if you are not sure of the id.</li>" +
+              "<li><strong>Find the component id.</strong> Component ids are stable, like <code>1.3</code>. The full list is in " + link(repo + "/blob/main/docs/taxonomy.md", "the taxonomy") + ".</li>" +
+              "<li><strong>Edit only that block.</strong> Update the component's <code>verdict</code>, <code>scheme</code>, <code>why</code>, and <code>sources</code>. Keep the reason short and source-backed.</li>" +
+              "<li><strong>Send the update.</strong> Open a PR from GitHub's editor; the automated check handles validation. If you only want to report the change, use the " + link(repo + "/issues/new?template=component-update.yml", "component update form") + " instead.</li>" +
+            "</ol>" +
+            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Update qsafe <code>&lt;project&gt;</code> component <code>&lt;id&gt;</code>. Edit only that assessment block, cite sources, validate it, and open a PR.”</p>' +
+          "</article>" +
+        "</div>" +
         '<div class="contribute__links">' +
           link(repo + "/blob/main/CONTRIBUTING.md", "Full contributor guide &rarr;") +
+          link(repo + "/blob/main/AGENTS.md", "Agent guide &rarr;") +
+          link("llms.txt", "LLM site map &rarr;") +
           link(repo, "GitHub repo &rarr;") +
           link(repo + "/compare", "Open a pull request &rarr;") +
         "</div>" +

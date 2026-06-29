@@ -1,67 +1,96 @@
 # Contributing to qsafe
 
-qsafe scores blockchains and on-chain products against a fixed **30-component** quantum-resistance framework. The whole app is driven by the JSON in `data/` — so contributing is just **editing data and opening a PR**. Anyone (or any AI agent) can do it, and CI checks every PR automatically.
+qsafe scores blockchains and on-chain products against a fixed **30-component** quantum-resistance framework. Most contributions are one of two things:
 
-## What you can contribute
+1. **Update one component** for an existing chain or product.
+2. **Add a full chain or product assessment**.
 
-- **A new chain** — assessed against the 30 components.
-- **A new product / sub-project** — something built on an existing chain (a shielded pool, a DEX, an L2), assessed as a branch of its host chain.
-- **A correction** — fix a verdict, scheme, `why`, or source on an existing project.
+AI or coding agents should also read [`AGENTS.md`](AGENTS.md). It is the compact operational guide for the framework, scoring boundaries, and validation flow.
 
-## The model (read this first)
+## Option 1: Update one component
 
-- **5 fixed core sections → 30 components.** These are frozen — you never add, rename, or remove them. The full list with descriptions is in [`docs/taxonomy.md`](docs/taxonomy.md), and the component ids (`1.1` … `5.5`) are the keys you fill in.
-- **Each component gets one verdict: `pass` · `fail` · `na`.**
-  - **pass** — as deployed *by default*, this uses post-quantum-secure crypto (hash-based, lattice, or NIST PQC; hash-based PoW).
-  - **fail** — it relies on crypto a quantum computer breaks: ECDSA / EdDSA / Schnorr over any elliptic curve, ECDH key-exchange, pairing-based BLS / KZG / Groth16, or discrete-log / EC commitments (Pedersen, IPA over Pasta curves). Opt-in-but-not-default PQ still counts as **fail**.
-  - **na** — the component genuinely isn't part of this project.
-- **Score = passes ÷ applicable**, where `applicable = 30 − na`. Each core also shows its own %.
+Use this when a single scorecard row is wrong or has changed. Example: "Project X component 1.3 is now post-quantum."
 
-## Scoring conventions (please be consistent)
+1. **Find the project file.** Existing assessments live in `data/projects/<project-id>.json`.
+2. **Find the component id.** Component ids are stable, such as `1.3` or `4.4`. The full list is in [`docs/taxonomy.md`](docs/taxonomy.md).
+3. **Edit only that component block.** Update:
+   - `verdict`: `pass`, `fail`, or `na`
+   - `scheme`: the concrete crypto or mechanism used
+   - `why`: one short, plain-language reason
+   - `sources`: primary links where possible
+4. **Send the update.** If you can edit files in GitHub, open a PR. If you do not want to edit JSON, use the [component update form](https://github.com/Calcutatator/qsafe/issues/new?template=component-update.yml) and include sources.
 
-- **Current default mainnet reality** — score what ships *by default today*, not the roadmap. Mention roadmap in the `why`.
-- **Canonical bridge only (4.4)** — score a chain's *own* canonical / in-protocol bridge. If it has none (most monolithic L1s), 4.4 = `na`. Third-party / custodial bridges are scored against their operator, not the chain.
-- **Proof-of-work (3.1, 4.1)** — hash-based PoW ordering / consensus has no Shor-breakable signing key → `pass`.
-- **Products inherit Settlement** — see below.
+You do not need to run local commands for a component update. The automated check validates the project data when you open a PR.
 
-## Add a chain (top-level project)
+Agent handoff: ask your agent to "Update qsafe `<project>` component `<id>`, edit only that assessment block, cite sources, validate it, and open a PR."
 
-1. Copy `data/projects/_template.json` → `data/projects/<id>.json`.
-2. Fill `id`, `name`, `type`, `reviewed` (a date), `summary`, `links`, and — for each of the 30 components — a `verdict` plus `scheme`, `why`, and `sources`.
-3. Register it in `data/projects/index.json`:
+## Option 2: Add a chain or product
+
+Use this when qsafe is missing a whole blockchain, L2, bridge, app, shielded pool, wallet system, or other on-chain product.
+
+1. **Copy the template.**
+   ```sh
+   cp data/projects/_template.json data/projects/<id>.json
+   ```
+2. **Fill the top-level fields:** `id`, `name`, `type`, `reviewed`, `summary`, and `links`.
+3. **Fill all 30 components.** Every component needs a `verdict`. Every `pass` or `fail` should also have `scheme`, `why`, and `sources`.
+4. **Register the project** in `data/projects/index.json`:
    ```json
    { "id": "<id>", "name": "...", "type": "...", "status": "assessed", "reviewed": "YYYY-MM-DD" }
    ```
-   (Use `"status": "queued"` with no file to list a project as not-yet-assessed.)
-4. Run `python3 scripts/build_projects.py` — it validates everything and regenerates `data/projects/bundle.js`.
-5. Commit the data **and** the regenerated `bundle.js`, and open a PR.
+5. **For a product built on another chain, set `parent`.** Put `"parent": "<host-chain-id>"` in both `data/projects/index.json` and the project file.
+6. **Open a PR** with the project JSON and updated index. The automated check validates the data; agents and local contributors can run `python3 scripts/build_projects.py` before sending.
 
-## Add a product / sub-project (something built on a chain)
+Agent handoff: ask your agent to "Add `<project>` to qsafe, follow `AGENTS.md`, fill all 30 components, run `python3 scripts/build_projects.py`, and open a PR."
 
-Everything above, plus:
+## The model
 
-- Set `"parent": "<host-chain-id>"` in **both** `index.json` and the project file. It renders as a branch under its parent.
-- **Settlement (4.3) = the host chain.** If the host chain isn't quantum-safe, `4.3 = fail` — set `"inherited": true`.
-- **Chain infrastructure the product only rides on** — sequencing (3.1), data availability (3.4), VM (3.6), consensus (4.1), light clients (4.2), networking (5.1/5.2/5.3) — is `na`. It's captured once, via Settlement.
-- **Score only what the product itself wields** — its keys, proofs, commitments, note encryption, contract checks. Tag anything it borrows from the host chain with `"inherited": true`.
+- qsafe has **5 fixed core sections and 30 fixed components**.
+- Do not add, remove, or rename components unless the framework itself is being changed intentionally.
+- The component ids (`1.1` through `5.5`) are the keys in every project assessment.
+- The human-readable component list is [`docs/taxonomy.md`](docs/taxonomy.md).
+- The canonical machine-readable taxonomy is [`data/taxonomy.json`](data/taxonomy.json).
 
-Worked examples: [`data/projects/strk20.json`](data/projects/strk20.json) (a product on Starknet) and [`data/projects/zcash.json`](data/projects/zcash.json) (a chain).
+## Verdicts
 
-## Component fields
+Each component gets one verdict:
 
-| field | required | value |
-|---|---|---|
-| `verdict` | yes | `pass` \| `fail` \| `na` |
-| `why` | for pass/fail | one plain-language sentence |
-| `scheme` | recommended | the crypto/primitive in use, e.g. `"secp256k1 ECDSA"` |
-| `sources` | recommended | list of URLs — primary sources (specs, audits, docs) preferred |
-| `inherited` | sub-projects | `true` if borrowed from the parent chain |
+| verdict | meaning |
+|---|---|
+| `pass` | The deployed default uses post-quantum-secure crypto: hash-based, lattice-based, NIST PQC, or hash-based PoW where applicable. |
+| `fail` | The deployed default relies on crypto a quantum computer breaks: ECDSA, EdDSA, Schnorr, sr25519, BLS, ECDH/RSA, KZG, Groth16, pairings, or elliptic-curve discrete-log commitments. |
+| `na` | The component is genuinely not part of this project architecture. |
 
-## Validate before you PR
+Score = passes / applicable components. `na` is excluded.
+
+## Scoring rules
+
+- **Current default mainnet reality:** score what ships by default today, not the roadmap.
+- **Roadmaps do not pass:** mention future or optional post-quantum work in `why`, but do not award `pass` for opt-in, experimental, or unreleased support.
+- **Canonical bridge only for 4.4:** score the chain's own canonical or in-protocol bridge. Third-party bridges belong to their own project/operator.
+- **Proof-of-work can pass for 3.1 or 4.1:** hash-based PoW ordering or consensus has no Shor-breakable signing key.
+- **Products inherit Settlement 4.3:** if a product relies on a host chain for settlement, score `4.3` as the host chain and set `"inherited": true`.
+
+## Product-specific notes
+
+For a product or sub-project built on a chain:
+
+- Set `"parent": "<host-chain-id>"` in both the project file and `data/projects/index.json`.
+- `4.3` Settlement inherits the host chain. If the host chain is not quantum-safe, `4.3 = fail`.
+- Infrastructure the product only rides on is usually `na`: sequencing `3.1`, data availability `3.4`, VM `3.6`, consensus `4.1`, light clients `4.2`, and networking `5.1`-`5.3`.
+- Score what the product itself wields: keys, proofs, commitments, note encryption, contract checks, and inherited settlement.
+
+Worked examples:
+
+- [`data/projects/zcash.json`](data/projects/zcash.json) — chain assessment.
+- [`data/projects/strk20.json`](data/projects/strk20.json) — product on Starknet.
+- [`data/projects/ironwood.json`](data/projects/ironwood.json) — product on Zcash.
+
+## Validation
 
 ```sh
-python3 scripts/build_projects.py          # prints each project's %, regenerates bundle.js
-python3 scripts/build_projects.py --check   # what CI runs: fails if anything is invalid or bundle.js is stale
+python3 scripts/build_projects.py          # validates and regenerates data/projects/bundle.js
+python3 scripts/build_projects.py --check   # optional stricter local check for stale bundle files
 ```
 
-A GitHub Action (**Validate projects**) runs `--check` on every PR that touches `data/` or `scripts/`, so you'll get a green/red signal automatically. Keep `data/projects/bundle.js` committed and current.
+If you are editing in GitHub's web UI, you can skip local commands. The **Validate projects** GitHub Action validates PRs that touch `data/` or `scripts/`. After changes reach `main`, the generated `data/projects/bundle.js` fallback is refreshed automatically.

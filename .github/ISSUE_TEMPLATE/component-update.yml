@@ -1,0 +1,69 @@
+name: Component update
+description: Suggest a change to one qsafe component for an existing chain or product.
+title: "[Component update] <project> <component-id>"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when one scorecard row looks wrong or has changed, for example "Starknet component 1.3 is now post-quantum."
+
+        If you know how to edit JSON, a pull request is faster. If not, fill this form and include sources.
+  - type: input
+    id: project
+    attributes:
+      label: Project
+      description: The chain or product name, such as Ethereum, Starknet, Zcash, STRK20, or Ironwood.
+      placeholder: Ethereum
+    validations:
+      required: true
+  - type: input
+    id: component
+    attributes:
+      label: Component id
+      description: The stable qsafe component id, such as 1.3 or 4.4. If unsure, include the component name.
+      placeholder: "1.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Proposed verdict
+      description: Choose the new verdict if you know it.
+      options:
+        - pass
+        - fail
+        - na
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: scheme
+    attributes:
+      label: Scheme or mechanism
+      description: What crypto or mechanism is now used?
+      placeholder: "ML-DSA, Falcon, STARK, BLS12-381, secp256k1 ECDSA..."
+  - type: textarea
+    id: why
+    attributes:
+      label: What changed?
+      description: Keep it short and concrete. Mention whether this is live by default today or only a roadmap.
+      placeholder: "Component 1.3 now uses ... by default on mainnet, replacing ..."
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: "Link primary sources where possible: official docs, specs, audits, standards, engineering posts, or papers."
+      placeholder: |
+        - https://...
+        - https://...
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: This describes current default mainnet behavior, not only a roadmap or opt-in feature.
+          required: true
