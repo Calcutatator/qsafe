@@ -3,6 +3,9 @@
 
   var app = document.getElementById("app");
   var crumbsEl = document.getElementById("crumbs");
+  var docEl = document.documentElement;
+  var themeToggle = document.getElementById("theme-toggle");
+  var THEME_KEY = "qsafe-theme";
 
   var STATUS = {
     breakable: { label: "Breakable", blurb: "A quantum computer can break this as it is built today." },
@@ -42,6 +45,63 @@
   var PROJECTS_INDEX = [];
   var PROJECTS = {};
   var OPEN = {};
+
+  // ---- theme ----
+  function storedTheme() {
+    try {
+      var theme = localStorage.getItem(THEME_KEY);
+      return theme === "light" || theme === "dark" ? theme : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function systemTheme() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function activeTheme() {
+    return docEl.getAttribute("data-theme") || systemTheme();
+  }
+
+  function saveTheme(theme) {
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (e) {}
+  }
+
+  function updateThemeToggle(theme) {
+    if (!themeToggle) return;
+    var next = theme === "dark" ? "light" : "dark";
+    var icon = theme === "dark" ? "☼" : "☾";
+    var iconEl = themeToggle.querySelector("span");
+    if (iconEl) iconEl.textContent = icon;
+    themeToggle.setAttribute("aria-label", "Switch to " + next + " mode");
+    themeToggle.setAttribute("title", "Switch to " + next + " mode");
+    themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  }
+
+  function initThemeToggle() {
+    if (!themeToggle) return;
+    updateThemeToggle(activeTheme());
+    themeToggle.addEventListener("click", function () {
+      var next = activeTheme() === "dark" ? "light" : "dark";
+      docEl.setAttribute("data-theme", next);
+      saveTheme(next);
+      updateThemeToggle(next);
+    });
+
+    if (window.matchMedia) {
+      var media = window.matchMedia("(prefers-color-scheme: dark)");
+      var onChange = function () {
+        if (!storedTheme()) updateThemeToggle(systemTheme());
+      };
+      if (media.addEventListener) media.addEventListener("change", onChange);
+      else if (media.addListener) media.addListener(onChange);
+    }
+  }
+
+  initThemeToggle();
 
   // ---- helpers ----
   function esc(s) {

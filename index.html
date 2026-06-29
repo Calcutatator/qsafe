@@ -6,6 +6,16 @@
   <title>qsafe — quantum-resistance breakdown for blockchains</title>
   <meta name="description" content="qsafe breaks a blockchain into 5 core sections and 30 components, each rated for what it takes to be quantum-safe." />
   <meta name="color-scheme" content="light dark" />
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("qsafe-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+      } catch (e) {}
+    }());
+  </script>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -22,6 +32,9 @@
         <a id="tab-contribute" href="#/contribute">Contribute</a>
       </nav>
       <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false">
+        <span aria-hidden="true">☾</span>
+      </button>
     </div>
   </header>
 
