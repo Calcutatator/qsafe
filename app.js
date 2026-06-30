@@ -31,6 +31,38 @@
     hash:       "Hashing",
     depends:    "Depends"
   };
+  var COMPONENT_SHORT = {
+    "1.1": "Keys",
+    "1.2": "custody",
+    "1.3": "threshold",
+    "1.4": "smart accounts",
+    "1.5": "session keys",
+    "1.6": "identity",
+    "1.7": "voting",
+    "2.1": "signature checks",
+    "2.2": "proof verifiers",
+    "2.3": "data feeds",
+    "2.4": "randomness",
+    "2.5": "time ordering",
+    "3.1": "sequencing",
+    "3.2": "proof system",
+    "3.3": "trusted setup",
+    "3.4": "data availability",
+    "3.5": "state commitment",
+    "3.6": "execution VM",
+    "4.1": "block signatures",
+    "4.2": "light clients",
+    "4.3": "settlement",
+    "4.4": "bridges",
+    "4.5": "restaking",
+    "4.6": "channels",
+    "4.7": "builder relay",
+    "5.1": "P2P transport",
+    "5.2": "node identity",
+    "5.3": "RPC transport",
+    "5.4": "key agreement",
+    "5.5": "app encryption"
+  };
   var VERDICT = {
     pass:    { label: "Pass",    blurb: "Meets the quantum-proof bar as implemented." },
     fail:    { label: "Fail",    blurb: "Breakable as implemented today." },
@@ -213,7 +245,7 @@
           'title="' + esc(s.subsection_id + " · " + s.subsection_label + " · " + (STATUS[s.status] || {}).label) + '">' +
           '<span class="map-cell__id">' + esc(s.subsection_id) + "</span>" +
           '<span class="map-cell__mark"></span>' +
-          '<span class="map-cell__name">' + esc(s.subsection_label) + "</span>" +
+          '<span class="map-cell__name">' + esc(COMPONENT_SHORT[s.subsection_id] || s.subsection_label) + "</span>" +
         "</a>";
       }).join("");
       return '<div class="framework-map__row core-tone--' + esc(c.id) + '">' +

@@ -1,5 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="1.5" y="1.5" width="29" height="29" rx="6.5" fill="#101817" stroke="#20352d"/>
-  <circle cx="15.4" cy="13.1" r="5.4" fill="none" stroke="#5ee7a8" stroke-width="3.1"/>
-  <path d="M20.9 13.2 V25.2" fill="none" stroke="#5ee7a8" stroke-width="3.1" stroke-linecap="round"/>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --tile: #fffdf7;
+      --tile-border: #d8d2c3;
+      --mark: #486737;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --tile: #1f211b;
+        --tile-border: #505245;
+        --mark: #b8cf9f;
+      }
+    }
+  </style>
+  <rect x="1.5" y="1.5" width="29" height="29" rx="6.5" fill="var(--tile)" stroke="var(--tile-border)"/>
+  <circle cx="15.4" cy="13.1" r="5.4" fill="none" stroke="var(--mark)" stroke-width="3.1"/>
+  <path d="M20.9 13.2 V25.2" fill="none" stroke="var(--mark)" stroke-width="3.1" stroke-linecap="round"/>
 </svg>

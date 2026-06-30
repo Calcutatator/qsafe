@@ -372,8 +372,10 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-ra
 .map-cell {
   position: relative;
   display: grid;
-  min-height: 48px;
-  padding: .48rem .45rem;
+  align-content: start;
+  gap: .24rem;
+  min-height: 60px;
+  padding: .48rem .45rem .42rem;
   border: 1px solid var(--map-line);
   border-radius: 4px;
   background: color-mix(in srgb, var(--surface) 72%, transparent);
@@ -391,6 +393,7 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-ra
   justify-self: start;
   font-family: var(--mono);
   font-size: .68rem;
+  line-height: 1;
   color: var(--muted);
 }
 
@@ -405,7 +408,15 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-ra
 }
 
 .map-cell__name {
-  display: none;
+  display: block;
+  max-width: 100%;
+  padding-right: .1rem;
+  color: var(--muted);
+  font-size: .56rem;
+  font-weight: 600;
+  line-height: 1.08;
+  opacity: .72;
+  overflow-wrap: break-word;
 }
 
 .map-cell--breakable { color: var(--breakable-fg); }
