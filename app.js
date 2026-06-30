@@ -200,40 +200,64 @@
         '</span><span class="lens__val">' + esc(lens[k] || "") + "</span></div>";
     }).join("");
 
-    var legend =
-      '<div class="legend">' +
-        '<div class="legend__group"><span class="legend__title">General case</span>' +
-          statusChip("breakable") + statusChip("depends") + statusChip("safe") + "</div>" +
-        '<div class="legend__group"><span class="legend__title">Fix maturity</span>' +
-          '<span class="legend__scale">' + maturityEl("research") + " &rarr; " + maturityEl("standardized") + "</span></div>" +
-      "</div>" +
-      '<p class="legend-note">“General case” is the typical quantum status of each component as built on most chains today — the framework’s map of where quantum risk lives. Specific projects are graded on the <a href="#/projects">Projects</a> tab.</p>';
+    function componentRange(core) {
+      var subs = core.subsections || [];
+      if (!subs.length) return "";
+      return subs[0].subsection_id + "-" + subs[subs.length - 1].subsection_id;
+    }
 
-    var cores = CORES.map(function (c) {
-      return '<a class="core-row" href="#/core/' + esc(c.id) + '">' +
-        '<span class="core-row__id">' + esc(c.id) + "</span>" +
-        '<span class="core-row__body">' +
-          '<span class="core-row__name">' + esc(c.name) + "</span>" +
-          '<span class="core-row__label">' + esc(c.label) + "</span>" +
-        "</span>" +
-        '<span class="core-row__meta">' +
-          applicTag(c.applicability) +
-          '<span class="core-row__count">' + (c.subsections || []).length + " components</span>" +
-          statusChip(c.at_a_glance) +
-        "</span>" +
-      "</a>";
+    var mapRows = CORES.map(function (c) {
+      var subs = c.subsections || [];
+      var cells = subs.map(function (s) {
+        return '<a class="map-cell map-cell--' + esc(s.status) + '" href="#/component/' + esc(s.subsection_id) + '" ' +
+          'title="' + esc(s.subsection_id + " · " + s.subsection_label + " · " + (STATUS[s.status] || {}).label) + '">' +
+          '<span class="map-cell__id">' + esc(s.subsection_id) + "</span>" +
+          '<span class="map-cell__mark"></span>' +
+          '<span class="map-cell__name">' + esc(s.subsection_label) + "</span>" +
+        "</a>";
+      }).join("");
+      return '<div class="framework-map__row core-tone--' + esc(c.id) + '">' +
+        '<a class="framework-map__label" href="#/core/' + esc(c.id) + '">' +
+          '<span class="framework-map__core">Core ' + esc(c.id) + "</span>" +
+          '<span class="framework-map__name">' + esc(c.name) + "</span>" +
+          '<span class="framework-map__range">' + esc(componentRange(c)) + "</span>" +
+        "</a>" +
+        '<div class="framework-map__cells">' + cells + "</div>" +
+      "</div>";
     }).join("");
 
     var html =
-      '<section class="intro">' +
-        "<h1>How quantum-proof is a blockchain?</h1>" +
-        '<p class="lede">Quantum computers don’t break “the blockchain” — they break three kinds of math. ' +
-        "Every part of a chain is just a place one of them lives. qsafe breaks a chain into " +
-        "<strong>5 core sections</strong> and <strong>30 components</strong>, each rated for what it takes to be quantum-safe.</p>" +
-        '<div class="lens">' + lensRows + "</div>" +
-        legend +
+      '<section class="overview-hero">' +
+        '<div class="overview-copy">' +
+          '<p class="eyebrow">General framework</p>' +
+          "<h1>How quantum-proof is a blockchain?</h1>" +
+          '<p class="lede">Quantum computers don’t break “the blockchain” — they break specific cryptographic surfaces. qsafe maps those surfaces across <strong>5 core sections</strong> and <strong>30 components</strong>, then scores real projects against the live default design.</p>' +
+          '<div class="status-legend" aria-label="General case legend">' +
+            '<span class="legend__title">General case</span>' +
+            statusChip("breakable") + statusChip("depends") + statusChip("safe") +
+          "</div>" +
+          '<a class="overview-cta" href="#/projects">' +
+            '<span class="overview-cta__k">View assessed projects</span>' +
+            '<span class="overview-cta__v">Compare live chains and products &rarr;</span>' +
+          "</a>" +
+        "</div>" +
+        '<section class="framework-map" aria-labelledby="framework-map-title">' +
+          '<div class="framework-map__head">' +
+            '<div><h2 id="framework-map-title">Framework map</h2>' +
+            '<p>5 cores · 30 components</p></div>' +
+            '<span class="framework-map__note">current-default reality</span>' +
+          "</div>" +
+          '<div class="framework-map__canvas">' + mapRows + "</div>" +
+        "</section>" +
       "</section>" +
-      '<ol class="core-list" aria-label="Core sections">' + cores + "</ol>";
+      '<section class="overview-lens" aria-labelledby="lens-title">' +
+        '<div class="overview-lens__head">' +
+          '<p class="eyebrow">Evaluation lens</p>' +
+          '<h2 id="lens-title">The math that matters</h2>' +
+        "</div>" +
+        '<div class="lens">' + lensRows + "</div>" +
+      "</section>" +
+      '<p class="legend-note">“General case” is the typical quantum status of each component as built on most chains today. Specific projects are graded on the <a href="#/projects">Projects</a> tab.</p>';
 
     return { html: html, crumbs: [{ label: "Overview" }], title: "qsafe — quantum-resistance breakdown for blockchains", tab: "principles" };
   }
@@ -241,6 +265,7 @@
   function renderCore(core) {
     var subs = core.subsections || [];
     var header =
+      '<a class="back-link" href="#/">&larr; Back to framework map</a>' +
       '<header class="page-head">' +
         '<div class="page-head__top">' +
           '<span class="page-head__id">Core ' + esc(core.id) + "</span>" +
@@ -308,6 +333,7 @@
 
     var html =
       '<article class="component">' +
+        '<a class="back-link" href="#/">&larr; Back to framework map</a>' +
         '<header class="page-head">' +
           '<div class="page-head__top">' +
             '<span class="page-head__id mono">' + esc(s.subsection_id) + "</span>" +
@@ -453,6 +479,7 @@
   function renderProjectCore(project, core) {
     var cs = coreStats(project, core);
     var header =
+      '<a class="back-link" href="#/projects/' + esc(project.id) + '">&larr; Back to ' + esc(project.name) + "</a>" +
       '<header class="page-head">' +
         '<div class="page-head__top"><span class="page-head__id">' + esc(project.name) + " · Core " + esc(core.id) + "</span>" +
           pctEl(cs.pct) + "</div>" +
@@ -515,6 +542,7 @@
 
     var html =
       '<article class="component">' +
+        '<a class="back-link" href="#/projects/' + esc(project.id) + "/core/" + esc(core.id) + '">&larr; Back to ' + esc(project.name) + " · " + esc(core.name) + "</a>" +
         '<header class="page-head">' +
           '<div class="page-head__top"><span class="page-head__id mono">' + esc(s.subsection_id) + "</span>" +
             verdictChip(a.verdict) + '<span class="page-head__id">' + esc(project.name) + "</span></div>" +
