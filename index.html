@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>qsafe — quantum-resistance breakdown for blockchains</title>
-  <meta name="description" content="qsafe breaks a blockchain into 5 core sections and 30 components, each rated for what it takes to be quantum-safe." />
+  <title>qsafe - quantum-risk transparency framework</title>
+  <meta name="description" content="qsafe maps quantum risk across 5 core sections and 30 components, giving each project a transparent view of its current quantum-safety status." />
   <meta name="robots" content="index,follow" />
   <meta name="color-scheme" content="light dark" />
   <link rel="canonical" href="https://qsafe.info/" />
@@ -27,8 +27,8 @@
     {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      "name": "qsafe blockchain quantum-resistance framework",
-      "description": "A 5-core, 30-component framework for assessing the quantum resistance of blockchains and on-chain products.",
+      "name": "qsafe quantum-risk transparency framework",
+      "description": "qsafe maps quantum risk across 5 core sections and 30 components, giving each project a transparent view of its current quantum-safety status.",
       "url": "https://qsafe.info/",
       "license": "https://github.com/Calcutatator/qsafe/blob/main/LICENSE",
       "isAccessibleForFree": true,
@@ -63,7 +63,7 @@
     <div class="wrap">
       <a class="brand" href="#/">
         <span class="brand__mark">qsafe</span>
-        <span class="brand__tag">quantum-resistance, component by component</span>
+        <span class="brand__tag">quantum-risk transparency</span>
       </a>
       <nav class="tabs" aria-label="Sections">
         <a id="tab-principles" href="#/">Principles</a>
@@ -79,8 +79,8 @@
 
   <main class="app" id="app">
     <section class="intro crawler-summary" aria-labelledby="crawler-title">
-      <h1 id="crawler-title">How quantum-proof is a blockchain?</h1>
-      <p class="lede">qsafe is a concise, machine-readable framework for evaluating blockchain quantum resistance. It splits a chain or on-chain product into <strong>5 fixed core sections</strong> and <strong>30 fixed components</strong>, then grades the live default design against the post-quantum bar.</p>
+      <h1 id="crawler-title">qsafe</h1>
+      <p class="lede">qsafe is an open-source framework for quantum risk in cryptographically secured software. Quantum computers don’t break cryptography in one way; they affect specific cryptographic surfaces: signatures, encryption, pairings, and hashing. qsafe maps those risks across <strong>5 core sections</strong> and <strong>30 components</strong>, providing a transparent view into a project’s current quantum-safety status.</p>
       <div class="lens" aria-label="Machine-readable resources">
         <div class="lens__row"><span class="lens__key">Framework</span><span class="lens__val"><a href="docs/framework.md">docs/framework.md</a> explains the reasoning, threat model, and sources.</span></div>
         <div class="lens__row"><span class="lens__key">Taxonomy</span><span class="lens__val"><a href="data/taxonomy.json">data/taxonomy.json</a> is the canonical 5-core / 30-component model.</span></div>
@@ -122,19 +122,19 @@
 
     <section class="crawler-block crawler-flow" aria-labelledby="crawler-contribute">
       <h2 id="crawler-contribute">Contribution paths</h2>
-      <p class="lede">There are two normal contribution routes: add a full chain/product assessment, or update one component of an existing chain/product.</p>
+      <p class="lede">There are two normal contribution routes: add a missing chain or product, or update one component in an existing assessment.</p>
       <ol class="contribute__steps">
-        <li><strong>Add a chain or product:</strong> read <a href="docs/framework.md">docs/framework.md</a>, <a href="docs/taxonomy.md">docs/taxonomy.md</a>, and <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>; copy <code>data/projects/_template.json</code> to <code>data/projects/&lt;id&gt;.json</code>; fill all 30 components; register it in <code>data/projects/index.json</code>; open a PR.</li>
-        <li><strong>Update one component:</strong> open <code>data/projects/&lt;project-id&gt;.json</code>, find the stable component id such as <code>1.3</code>, update only that assessment block's <code>verdict</code>, <code>scheme</code>, <code>why</code>, and <code>sources</code>, then open a PR or use the <a href="https://github.com/Calcutatator/qsafe/issues/new?template=component-update.yml">component update form</a>.</li>
-        <li><strong>Scoring rule:</strong> score current default mainnet reality, not the roadmap. Use primary sources and mention future plans in <code>why</code> without awarding credit for opt-in or unreleased migrations.</li>
+        <li><strong>Add a chain or product:</strong> read <a href="docs/framework.md">docs/framework.md</a>, <a href="docs/taxonomy.md">docs/taxonomy.md</a>, and <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>; copy <code>data/projects/_template.json</code> to <code>data/projects/&lt;id&gt;.json</code>; fill all 30 components; add it to <code>data/projects/index.json</code>; open a PR.</li>
+        <li><strong>Update one component:</strong> open <code>data/projects/&lt;project-id&gt;.json</code>, find the stable component id such as <code>1.3</code>, update only that component’s assessment block, then open a PR or use the <a href="https://github.com/Calcutatator/qsafe/issues/new?template=component-update.yml">component update form</a>.</li>
+        <li><strong>Scoring rule:</strong> score the project’s live default setup, not its roadmap. Use primary sources; future plans can be noted in <code>why</code>, but do not count until they are deployed by default.</li>
       </ol>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <span>5 core sections &middot; 30 components &middot; model v<span id="ver">&mdash;</span></span>
-      <span class="muted">v1 is the generalized model. Per-chain scorecards come next.</span>
+      <span>5 core sections &middot; 30 components &middot; model v<span id="ver">N/A</span></span>
+      <span class="muted">Framework plus live project scorecards.</span>
     </div>
   </footer>
 

@@ -229,9 +229,9 @@
     var html =
       '<section class="overview-hero">' +
         '<div class="overview-copy">' +
-          '<p class="eyebrow">General framework</p>' +
-          "<h1>How quantum-proof is a blockchain?</h1>" +
-          '<p class="lede">Quantum computers don’t break “the blockchain” — they break specific cryptographic surfaces. qsafe maps those surfaces across <strong>5 core sections</strong> and <strong>30 components</strong>, then scores real projects against the live default design.</p>' +
+          '<p class="eyebrow">Quantum-risk framework</p>' +
+          "<h1>qsafe</h1>" +
+          '<p class="lede">qsafe is an open-source framework for quantum risk in cryptographically secured software. Quantum computers don’t break cryptography in one way; they affect specific cryptographic surfaces: signatures, encryption, pairings, and hashing. qsafe maps those risks across <strong>5 core sections</strong> and <strong>30 components</strong>, providing a transparent view into a project’s current quantum-safety status.</p>' +
           '<div class="status-legend" aria-label="General case legend">' +
             '<span class="legend__title">General case</span>' +
             statusChip("breakable") + statusChip("depends") + statusChip("safe") +
@@ -245,7 +245,7 @@
           '<div class="framework-map__head">' +
             '<div><h2 id="framework-map-title">Framework map</h2>' +
             '<p>5 cores · 30 components</p></div>' +
-            '<span class="framework-map__note">current-default reality</span>' +
+            '<span class="framework-map__note">live default setup</span>' +
           "</div>" +
           '<div class="framework-map__canvas">' + mapRows + "</div>" +
         "</section>" +
@@ -257,9 +257,9 @@
         "</div>" +
         '<div class="lens">' + lensRows + "</div>" +
       "</section>" +
-      '<p class="legend-note">“General case” is the typical quantum status of each component as built on most chains today. Specific projects are graded on the <a href="#/projects">Projects</a> tab.</p>';
+      '<p class="legend-note">General case is the framework view: where quantum risk usually lives across the model. Project scores are built from the components a chain or product actually uses today; components outside its design are marked N/A and excluded from the score.</p>';
 
-    return { html: html, crumbs: [{ label: "Overview" }], title: "qsafe — quantum-resistance breakdown for blockchains", tab: "principles" };
+    return { html: html, crumbs: [{ label: "Overview" }], title: "qsafe - quantum-risk transparency framework", tab: "principles" };
   }
 
   function renderCore(core) {
@@ -301,7 +301,7 @@
     return {
       html: header + '<div class="rows">' + rowsHeader + rows + "</div>",
       crumbs: [{ label: "Overview", href: "#/" }, { label: core.name }],
-      title: core.name + " — qsafe",
+      title: core.name + " - qsafe",
       tab: "principles"
     };
   }
@@ -354,7 +354,7 @@
           (lens ? '<p class="lens-note"><span class="lens-note__k">Why ' + esc(primName.toLowerCase()) + " is at risk:</span> " + esc(lens) + "</p>" : "") +
         "</section>" +
         '<section class="block block--context"><h2>In context</h2>' +
-          '<p><a class="back-core" href="#/core/' + esc(core.id) + '">Core ' + esc(core.id) + " &middot; " + esc(core.name) + "</a> &mdash; " + esc(core.label) + ".</p>" +
+          '<p><a class="back-core" href="#/core/' + esc(core.id) + '">Core ' + esc(core.id) + " &middot; " + esc(core.name) + "</a> - " + esc(core.label) + ".</p>" +
           (core.notes ? '<p class="note">' + esc(core.notes) + "</p>" : "") +
         "</section>" +
         nav +
@@ -363,7 +363,7 @@
     return {
       html: html,
       crumbs: [{ label: "Overview", href: "#/" }, { label: core.name, href: "#/core/" + core.id }, { label: s.subsection_id + " " + s.subsection_label }],
-      title: s.subsection_label + " — qsafe",
+      title: s.subsection_label + " - qsafe",
       tab: "principles"
     };
   }
@@ -410,20 +410,20 @@
     var html =
       '<section class="intro">' +
         "<h1>Projects</h1>" +
-        '<p class="lede">Real chains and products graded against the 30 components. ' +
-        "A component <strong>passes</strong> if it meets that component’s “what it takes to be quantum-proof” bar; " +
-        "the percentage is the share of <em>applicable</em> components that pass (N/A excluded). Chains with products expand to reveal them.</p>" +
+        '<p class="lede">Projects shows assessed chains and products against the same 30-component framework. ' +
+        "Each score counts only the components the project has live today; components outside its design are marked N/A and left out. " +
+        "A component passes when its relevant cryptographic surface, such as signatures, encryption, pairings, or hashing, is quantum-safe in the live default setup.</p>" +
       "</section>" +
       '<div class="proj-list" aria-label="Projects">' + rows + "</div>";
 
-    return { html: html, crumbs: [{ label: "Projects" }], title: "Projects — qsafe", tab: "projects" };
+    return { html: html, crumbs: [{ label: "Projects" }], title: "Projects - qsafe", tab: "projects" };
   }
 
   function renderProjectMissing(id) {
     var html =
       '<section class="intro"><h1>Assessment queued</h1>' +
       '<p class="lede">“' + esc(id) + '” hasn’t been assessed yet. <a href="#/projects">Back to projects</a>.</p></section>';
-    return { html: html, crumbs: [{ label: "Projects", href: "#/projects" }, { label: id }], title: "Projects — qsafe", tab: "projects" };
+    return { html: html, crumbs: [{ label: "Projects", href: "#/projects" }, { label: id }], title: "Projects - qsafe", tab: "projects" };
   }
 
   function renderProject(project) {
@@ -471,7 +471,7 @@
     return {
       html: html,
       crumbs: [{ label: "Projects", href: "#/projects" }, { label: project.name }],
-      title: project.name + " — qsafe",
+      title: project.name + " - qsafe",
       tab: "projects"
     };
   }
@@ -498,14 +498,14 @@
         '<span class="cell cell--id mono">' + esc(s.subsection_id) + "</span>" +
         '<span class="cell cell--name"><span class="row__name">' + esc(s.subsection_label) + (a.inherited ? ' <span class="tag tag--inherited">inherited</span>' : "") + "</span>" +
           '<span class="row__sub">' + esc(s.one_liner) + "</span></span>" +
-        '<span class="cell cell--scheme">' + (a.scheme ? '<span class="scheme">' + esc(a.scheme) + "</span>" : '<span class="muted">—</span>') + "</span>" +
+        '<span class="cell cell--scheme">' + (a.scheme ? '<span class="scheme">' + esc(a.scheme) + "</span>" : '<span class="muted">Not listed</span>') + "</span>" +
         '<span class="cell cell--verdict">' + verdictChip(a.verdict) + "</span></a>";
     }).join("");
 
     return {
       html: header + '<div class="rows rows--proj">' + rowsHeader + rows + "</div>",
       crumbs: [{ label: "Projects", href: "#/projects" }, { label: project.name, href: "#/projects/" + project.id }, { label: core.name }],
-      title: core.name + " · " + project.name + " — qsafe",
+      title: core.name + " · " + project.name + " - qsafe",
       tab: "projects"
     };
   }
@@ -571,7 +571,7 @@
         { label: core.name, href: "#/projects/" + project.id + "/core/" + core.id },
         { label: s.subsection_id + " " + s.subsection_label }
       ],
-      title: s.subsection_label + " · " + project.name + " — qsafe",
+      title: s.subsection_label + " · " + project.name + " - qsafe",
       tab: "projects"
     };
   }
@@ -582,31 +582,31 @@
     var html =
       '<section class="intro">' +
         "<h1>Contribute</h1>" +
-        '<p class="lede">qsafe is an open-source scorecard for the quantum resistance of blockchains and the products built on them. Most contributions are either a full project assessment, or a small update to one component of an existing project.</p>' +
+        '<p class="lede">Contribute to qsafe by either adding a missing chain or product, or updating one component in an existing assessment.</p>' +
       "</section>" +
       '<section class="contribute">' +
         '<div class="contribute-routes">' +
           '<article class="contribute-route">' +
             '<div class="contribute-route__top"><span class="contribute-route__k">Full assessment</span><h2>Add a chain or product</h2></div>' +
-            '<p class="contribute-route__lede">Use this when a blockchain, L2, bridge, app, or product is missing from qsafe.</p>' +
+            '<p class="contribute-route__lede">Use this for a new chain, L2, bridge, app, or product that is not yet listed.</p>' +
             '<ol class="contribute__steps">' +
-              "<li><strong>Copy the scorecard.</strong> Start from " + link(repo + "/blob/main/data/projects/_template.json", "<code>data/projects/_template.json</code>") + " and save it as <code>data/projects/&lt;id&gt;.json</code>.</li>" +
+              "<li><strong>Start from the template.</strong> Copy " + link(repo + "/blob/main/data/projects/_template.json", "<code>data/projects/_template.json</code>") + " and save it as <code>data/projects/&lt;id&gt;.json</code>.</li>" +
               "<li><strong>Fill all 30 components.</strong> For each one, choose <code>pass</code>, <code>fail</code>, or <code>na</code>, then add the scheme, a short reason, and sources.</li>" +
-              "<li><strong>Register the project.</strong> Add it to " + link(repo + "/blob/main/data/projects/index.json", "<code>data/projects/index.json</code>") + ". For a product, set <code>parent</code> to the host chain.</li>" +
-              "<li><strong>Send it.</strong> Open a PR. The automated check validates the data; agents and local contributors can run <code>python3 scripts/build_projects.py</code> before sending.</li>" +
+              "<li><strong>Add it to the project list.</strong> Update " + link(repo + "/blob/main/data/projects/index.json", "<code>data/projects/index.json</code>") + ". For a product, set <code>parent</code> to the chain it runs on.</li>" +
+              "<li><strong>Send it.</strong> Open a PR. GitHub checks the data automatically; agents and local contributors can run <code>python3 scripts/build_projects.py</code> before sending.</li>" +
             "</ol>" +
-            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Add <code>&lt;project&gt;</code> to qsafe. Follow <code>AGENTS.md</code>, fill all 30 components, run <code>python3 scripts/build_projects.py</code>, and open a PR.”</p>' +
+            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Add <code>&lt;project&gt;</code> to qsafe using ' + link(repo + "/blob/main/AGENTS.md", "<code>AGENTS.md</code>") + '. Create the project file, score all 30 components with sources, validate it, and open a PR.”</p>' +
           "</article>" +
           '<article class="contribute-route">' +
             '<div class="contribute-route__top"><span class="contribute-route__k">Small update</span><h2>Update one component</h2></div>' +
-            '<p class="contribute-route__lede">Use this when one component changed or is wrong, for example “project X component 1.3 is now post-quantum.” No local setup needed.</p>' +
+            '<p class="contribute-route__lede">Use this when one specific component in an existing assessment is outdated, incorrect, or missing better sources.</p>' +
             '<ol class="contribute__steps">' +
-              "<li><strong>Find the project file.</strong> Open <code>data/projects/&lt;project-id&gt;.json</code>. Use the " + link(repo + "/tree/main/data/projects", "project folder") + " if you are not sure of the id.</li>" +
-              "<li><strong>Find the component id.</strong> Component ids are stable, like <code>1.3</code>. The full list is in " + link(repo + "/blob/main/docs/taxonomy.md", "the taxonomy") + ".</li>" +
-              "<li><strong>Edit only that block.</strong> Update the component's <code>verdict</code>, <code>scheme</code>, <code>why</code>, and <code>sources</code>. Keep the reason short and source-backed.</li>" +
-              "<li><strong>Send the update.</strong> Open a PR from " + link(repo + "/tree/main/data/projects", "GitHub's editor") + "; the automated check handles validation. If you only want to report the change, use the " + link(repo + "/issues/new?template=component-update.yml", "component update form") + " instead.</li>" +
+              "<li><strong>Find the project file.</strong> Open <code>data/projects/&lt;project-id&gt;.json</code>, or use the " + link(repo + "/tree/main/data/projects", "project folder") + " if you are not sure of the id.</li>" +
+              "<li><strong>Find the component id.</strong> Component ids are stable, like <code>1.3</code>, and the full list is in " + link(repo + "/blob/main/docs/taxonomy.md", "the taxonomy") + ".</li>" +
+              "<li><strong>Edit only that block.</strong> Update the component’s <code>verdict</code>, <code>scheme</code>, <code>why</code>, and <code>sources</code>. Keep the reason short and source-backed.</li>" +
+              "<li><strong>Send the update.</strong> Open a PR from " + link(repo + "/tree/main/data/projects", "GitHub’s editor") + "; GitHub checks the data automatically. If you only want to report the change, use the " + link(repo + "/issues/new?template=component-update.yml", "component update form") + " instead.</li>" +
             "</ol>" +
-            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Update qsafe <code>&lt;project&gt;</code> component <code>&lt;id&gt;</code>. Edit only that assessment block, cite sources, validate it, and open a PR.”</p>' +
+            '<p class="agent-handoff"><span>Agent handoff</span> Ask your agent: “Update qsafe <code>&lt;project&gt;</code> component <code>&lt;id&gt;</code>. Change only that component’s assessment, cite sources, validate it, and open a PR.”</p>' +
           "</article>" +
         "</div>" +
         '<div class="contribute__links">' +
@@ -616,9 +616,9 @@
           link(repo, "GitHub repo &rarr;") +
           link(repo + "/compare", "Open a pull request &rarr;") +
         "</div>" +
-        '<p class="contribute__note muted">The five core sections and thirty components are fixed — contributions change project data, not the framework itself.</p>' +
+        '<p class="contribute__note muted">The framework structure stays stable; contributions update project assessments, evidence, and sources.</p>' +
       "</section>";
-    return { html: html, crumbs: [{ label: "Contribute" }], title: "Contribute — qsafe", tab: "contribute" };
+    return { html: html, crumbs: [{ label: "Contribute" }], title: "Contribute - qsafe", tab: "contribute" };
   }
 
   // ---- chrome ----
