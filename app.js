@@ -5,6 +5,7 @@
   var crumbsEl = document.getElementById("crumbs");
   var docEl = document.documentElement;
   var themeToggle = document.getElementById("theme-toggle");
+  var faviconLink = document.getElementById("favicon") || document.querySelector('link[rel~="icon"]');
   var THEME_KEY = "qsafe-theme";
 
   var STATUS = {
@@ -113,20 +114,32 @@
     themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
   }
 
+  function updateFavicon(theme) {
+    if (!faviconLink) return;
+    faviconLink.setAttribute("href", theme === "dark" ? "favicon-dark.svg" : "favicon-light.svg");
+  }
+
   function initThemeToggle() {
+    var theme = activeTheme();
+    updateThemeToggle(theme);
+    updateFavicon(theme);
     if (!themeToggle) return;
-    updateThemeToggle(activeTheme());
     themeToggle.addEventListener("click", function () {
       var next = activeTheme() === "dark" ? "light" : "dark";
       docEl.setAttribute("data-theme", next);
       saveTheme(next);
       updateThemeToggle(next);
+      updateFavicon(next);
     });
 
     if (window.matchMedia) {
       var media = window.matchMedia("(prefers-color-scheme: dark)");
       var onChange = function () {
-        if (!storedTheme()) updateThemeToggle(systemTheme());
+        if (!storedTheme()) {
+          var next = systemTheme();
+          updateThemeToggle(next);
+          updateFavicon(next);
+        }
       };
       if (media.addEventListener) media.addEventListener("change", onChange);
       else if (media.addListener) media.addListener(onChange);
@@ -263,7 +276,10 @@
         '<div class="overview-copy">' +
           '<p class="eyebrow">Quantum-risk framework</p>' +
           "<h1>qsafe</h1>" +
-          '<p class="lede">qsafe is an open-source framework for quantum risk in cryptographically secured software. Quantum computers don’t break cryptography in one way; they affect specific cryptographic surfaces: signatures, encryption, pairings, and hashing. qsafe maps those risks across <strong>5 core sections</strong> and <strong>30 components</strong>, providing a transparent view into a project’s current quantum-safety status.</p>' +
+          '<div class="lede overview-lede">' +
+            "<p>qsafe is an open-source framework for quantum risk in cryptographically secured software.</p>" +
+            "<p>Quantum computers don’t break cryptography in one way; they affect specific cryptographic surfaces: signatures, encryption, pairings, and hashing. qsafe maps those risks across <strong>5 core sections</strong> and <strong>30 components</strong>, providing a transparent view into a project’s current quantum-safety status.</p>" +
+          "</div>" +
           '<div class="status-legend" aria-label="General case legend">' +
             '<span class="legend__title">General case</span>' +
             statusChip("breakable") + statusChip("depends") + statusChip("safe") +
@@ -286,6 +302,7 @@
         '<div class="overview-lens__head">' +
           '<p class="eyebrow">Evaluation lens</p>' +
           '<h2 id="lens-title">The math that matters</h2>' +
+          '<p class="overview-lens__copy">These are the four key risk surfaces each component is checked against.</p>' +
         "</div>" +
         '<div class="lens">' + lensRows + "</div>" +
       "</section>" +
