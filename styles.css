@@ -563,6 +563,29 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-ra
 .lens-note__k { color: var(--text); font-weight: 600; }
 .back-core { font-weight: 600; }
 
+.source-file {
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+  flex-wrap: wrap;
+  margin: 1.6rem 0 0;
+  padding-top: .9rem;
+  border-top: 1px solid var(--border);
+  font-size: .82rem;
+  color: var(--muted);
+}
+.source-file__label {
+  color: var(--text);
+  font-weight: 700;
+}
+.source-file__link {
+  font-family: var(--mono);
+  font-weight: 650;
+}
+.source-file__note {
+  flex-basis: 100%;
+}
+
 .prevnext { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem; }
 .prevnext__link { display: flex; flex-direction: column; gap: .15rem; max-width: 48%; }
 .prevnext__link--next { text-align: right; margin-left: auto; }

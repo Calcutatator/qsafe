@@ -7,6 +7,7 @@
   var themeToggle = document.getElementById("theme-toggle");
   var faviconLink = document.getElementById("favicon") || document.querySelector('link[rel~="icon"]');
   var THEME_KEY = "qsafe-theme";
+  var REPO_URL = "https://github.com/Calcutatator/qsafe";
 
   var STATUS = {
     breakable: { label: "Breakable", blurb: "A quantum computer can break this as it is built today." },
@@ -185,6 +186,18 @@
     return '<span class="meter" title="Fix maturity: ' + esc(x.label) + '">' +
       '<span class="meter__dots">' + dots + "</span>" +
       '<span class="meter__label">' + esc(x.label) + "</span></span>";
+  }
+
+  function githubFileUrl(path) {
+    return REPO_URL + "/blob/main/" + path;
+  }
+
+  function sourceFileLink(label, path, note) {
+    return '<section class="source-file" aria-label="' + esc(label) + '">' +
+      '<span class="source-file__label">' + esc(label) + "</span>" +
+      '<a class="source-file__link" href="' + esc(githubFileUrl(path)) + '" target="_blank" rel="noopener">' + esc(path) + "</a>" +
+      '<span class="source-file__note">' + esc(note) + "</span>" +
+    "</section>";
   }
 
   function pctEl(pct, big) {
@@ -406,6 +419,7 @@
           '<p><a class="back-core" href="#/core/' + esc(core.id) + '">Core ' + esc(core.id) + " &middot; " + esc(core.name) + "</a> - " + esc(core.label) + ".</p>" +
           (core.notes ? '<p class="note">' + esc(core.notes) + "</p>" : "") +
         "</section>" +
+        sourceFileLink("Framework file", "data/taxonomy.json", "This component's general framework copy is pulled from this file.") +
         nav +
       "</article>";
 
@@ -609,6 +623,7 @@
           '<p><a class="back-core" href="#/projects/' + esc(project.id) + "/core/" + esc(core.id) + '">' + esc(project.name) + " · " + esc(core.name) + "</a>" +
           ' &middot; <a href="#/component/' + esc(s.subsection_id) + '">see the general principle &rarr;</a></p>' +
         "</section>" +
+        sourceFileLink("Assessment file", "data/projects/" + project.id + ".json", "This component's project status is pulled from this file.") +
         nav +
       "</article>";
 
@@ -626,7 +641,7 @@
   }
 
   function renderContribute() {
-    var repo = "https://github.com/Calcutatator/qsafe";
+    var repo = REPO_URL;
     function link(href, text) { return '<a href="' + href + '" target="_blank" rel="noopener">' + text + "</a>"; }
     var html =
       '<section class="intro">' +
