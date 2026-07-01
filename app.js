@@ -200,6 +200,16 @@
     "</section>";
   }
 
+  function sourceLabel(url, index) {
+    var fallback = "source " + (index + 1);
+    try {
+      var host = new URL(url).hostname.replace(/^www\./, "");
+      return host || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   function pctEl(pct, big) {
     var cls = "pct" + (big ? " pct--big" : "");
     if (pct === null || pct === undefined) {
@@ -461,7 +471,7 @@
             '<span class="proj-row__name">' + esc(p.name) + "</span>" +
             '<span class="proj-row__type">' + esc(p.type) + "</span></a>" +
           '<span class="proj-row__meta">' + metaCell(p) + "</span>" +
-          '<button class="proj-toggle" type="button" data-toggle="' + esc(p.id) + '" aria-expanded="' + (open ? "true" : "false") + '" aria-controls="kids-' + esc(p.id) + '">' +
+          '<button class="proj-toggle" type="button" data-toggle="' + esc(p.id) + '" aria-label="' + (open ? "Hide " : "Show ") + esc(p.name) + ' products" aria-expanded="' + (open ? "true" : "false") + '" aria-controls="kids-' + esc(p.id) + '">' +
             '<span class="proj-toggle__count">' + n + (n === 1 ? " product" : " products") + "</span>" +
             '<span class="proj-toggle__caret" aria-hidden="true">&#9656;</span></button>' +
         "</div>";
@@ -598,8 +608,8 @@
 
     var sources = "";
     if (a.sources && a.sources.length) {
-      sources = '<div class="status-sources">' + a.sources.map(function (u) {
-        return '<a href="' + esc(u) + '" target="_blank" rel="noopener">source</a>';
+      sources = '<div class="status-sources">' + a.sources.map(function (u, i) {
+        return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(sourceLabel(u, i)) + "</a>";
       }).join("") + "</div>";
     }
 
@@ -675,6 +685,7 @@
         "</div>" +
         '<div class="contribute__links">' +
           link(repo + "/blob/main/CONTRIBUTING.md", "Full contributor guide &rarr;") +
+          link(repo + "/blob/main/data/README.md", "Data guide &rarr;") +
           link(repo + "/blob/main/AGENTS.md", "Agent guide &rarr;") +
           link("llms.txt", "LLM site map &rarr;") +
           link(repo, "GitHub repo &rarr;") +

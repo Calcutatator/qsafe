@@ -1,5 +1,13 @@
 # Schema
 
+Machine-readable JSON Schema contracts live in:
+
+- [`data/schema/taxonomy.schema.json`](../data/schema/taxonomy.schema.json)
+- [`data/schema/project-index.schema.json`](../data/schema/project-index.schema.json)
+- [`data/schema/project.schema.json`](../data/schema/project.schema.json)
+
+The repo keeps validation zero-dependency. `scripts/build_projects.py` enforces the core rules directly and parses the schema files to make sure they stay valid JSON.
+
 ## `data/taxonomy.json`
 
 ```
@@ -40,3 +48,64 @@ Long format for per-chain audits:
 `chain, subsection_id, subsection_label, applies, scheme_used, status, notes`
 - `applies`: `yes` | `no` | `na`
 - `status`: `safe` | `breakable` | `depends` | `na` | `unknown`
+
+## `data/projects/index.json`
+
+Registry and display order for projects:
+
+```
+{
+  "projects": [
+    {
+      "id": "project-id",
+      "name": "Display Name",
+      "type": "Short project type",
+      "parent": "host-chain-id",
+      "status": "assessed | queued",
+      "reviewed": "YYYY-MM-DD"
+    }
+  ]
+}
+```
+
+Rules:
+
+- `id` is the stable slug and must match `data/projects/<id>.json`.
+- `parent` is only used for products built on another chain.
+- `reviewed` is required for assessed projects.
+- Assessed entries must have a matching project file.
+
+## `data/projects/<id>.json`
+
+One assessment per project:
+
+```
+{
+  "id": "project-id",
+  "name": "Display Name",
+  "type": "Short project type",
+  "parent": "host-chain-id",
+  "reviewed": "YYYY-MM-DD",
+  "summary": "Plain-language summary",
+  "links": { "Website": "https://..." },
+  "assessment": {
+    "1.1": {
+      "verdict": "pass | fail | na",
+      "scheme": "Concrete crypto or mechanism",
+      "why": "Short source-backed reason",
+      "sources": ["https://..."],
+      "inherited": true
+    }
+  }
+}
+```
+
+Rules:
+
+- Every assessed project must include all 30 component ids.
+- `verdict` must be `pass`, `fail`, or `na`.
+- Every verdict needs a `why`.
+- `pass` and `fail` need a concrete `scheme`.
+- `sources` must be a list of HTTP(S) URLs when present.
+- `inherited` is optional and should be `true` only when a product inherits a component from its parent chain.
+- `name`, `type`, `reviewed`, and `parent` must match the project entry in `data/projects/index.json`.

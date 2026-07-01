@@ -34,14 +34,16 @@ Deep-linkable routes:
 
 ## The data
 
-`data/` is the canonical, machine-readable taxonomy:
+`data/` is the canonical, machine-readable framework and project data. Start with [`data/README.md`](data/README.md) for the contributor-facing data guide.
 
 | File | What |
 |---|---|
+| `data/README.md` | Human guide to editable files, generated files, contribution routes, and validation. |
 | `data/taxonomy.json` | Canonical source — `meta` + 5 `cores[]` → 30 components. The app reads this. |
 | `data/taxonomy.js`   | The same object as `window.TAXONOMY`, so `index.html` also runs from `file://`. |
 | `data/taxonomy.csv`  | Flat, one row per component. |
 | `data/assessment_template.csv` | Long-format scaffold for per-chain audits (the v2 scorecards). |
+| `data/schema/` | JSON Schema contracts for taxonomy, project index, and project assessment files. |
 
 `docs/` holds the human-readable taxonomy, the research framework + sources, the field schema, and the component-map infographic.
 
@@ -62,6 +64,7 @@ Project assessments live in `data/projects/` — `index.json` (the list) plus on
 ```
 index.html  styles.css  app.js   the site (GitHub Pages serves it from the repo root)
 data/                            canonical taxonomy (JSON/CSV) + window.TAXONOMY copy
+data/schema/                     JSON Schema contracts for data files
 data/projects/                   per-project assessments (index.json · <id>.json · _template.json · bundle.js)
 docs/                            taxonomy, framework, schema, component-map.svg
 scripts/build_projects.py        validates project data + regenerates the bundle

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qsafe.info/data/schema/project.schema.json",
+  "title": "qsafe project assessment",
+  "type": "object",
+  "required": ["id", "name", "type", "reviewed", "summary", "assessment"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reviewed": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "minProperties": 30,
+      "additionalProperties": {
+        "$ref": "#/$defs/componentAssessment"
+      }
+    }
+  },
+  "$defs": {
+    "componentAssessment": {
+      "type": "object",
+      "required": ["verdict"],
+      "additionalProperties": false,
+      "properties": {
+        "_component": {
+          "type": "string"
+        },
+        "verdict": {
+          "type": "string",
+          "enum": ["pass", "fail", "na"]
+        },
+        "inherited": {
+          "type": "boolean"
+        },
+        "scheme": {
+          "type": "string"
+        },
+        "why": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["verdict"],
+            "properties": {
+              "verdict": {
+                "enum": ["pass", "fail"]
+              }
+            }
+          },
+          "then": {
+            "required": ["scheme", "why"]
+          }
+        },
+        {
+          "if": {
+            "required": ["verdict"],
+            "properties": {
+              "verdict": {
+                "const": "na"
+              }
+            }
+          },
+          "then": {
+            "required": ["why"]
+          }
+        }
+      ]
+    }
+  }
+}

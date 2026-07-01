@@ -11,6 +11,7 @@ Read these files before scoring or editing project data:
 - `docs/taxonomy.md` — human-readable list of all 30 fixed components.
 - `CONTRIBUTING.md` — scoring rules and project-submission flow.
 - `docs/schema.md` — field meanings for taxonomy and project data.
+- `data/README.md` — contributor-facing map of editable data, generated files, schemas, and validation.
 
 Canonical machine-readable files:
 
@@ -18,6 +19,7 @@ Canonical machine-readable files:
 - `data/projects/index.json` — registry of assessed and queued projects.
 - `data/projects/<id>.json` — one assessment per assessed project.
 - `data/projects/bundle.js` — generated browser fallback; do not edit by hand.
+- `data/schema/*.schema.json` — machine-readable data contracts for editors and agents.
 
 ## Run the app
 
@@ -39,6 +41,8 @@ python3 scripts/build_projects.py --check
 ```
 
 `python3 scripts/build_projects.py` validates all assessed projects and regenerates `data/projects/bundle.js`. PR validation runs this non-`--check` command so web editors do not have to commit generated files. After changes reach `main`, GitHub Actions refreshes `data/projects/bundle.js` automatically if needed.
+
+The validator also catches metadata drift between `data/projects/index.json` and project files, invalid reviewed dates, malformed source URLs, unknown fields, and missing required component fields. Missing source links on older pass/fail entries are currently warnings, not hard failures.
 
 ## Route 1: Update one component
 

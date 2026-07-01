@@ -7,6 +7,8 @@ qsafe scores blockchains and on-chain products against a fixed **30-component** 
 
 AI or coding agents should also read [`AGENTS.md`](AGENTS.md). It is the compact operational guide for the framework, scoring boundaries, and validation flow.
 
+For a file-by-file map of the data folder, editable files, generated files, and schemas, see [`data/README.md`](data/README.md).
+
 ## Option 1: Update one component
 
 Use this when a single scorecard row is wrong or has changed. Example: "Project X component 1.3 is now post-quantum."
@@ -92,5 +94,7 @@ Worked examples:
 python3 scripts/build_projects.py          # validates and regenerates data/projects/bundle.js
 python3 scripts/build_projects.py --check   # optional stricter local check for stale bundle files
 ```
+
+The validator also checks that project metadata matches `data/projects/index.json`, dates are valid, source URLs are well formed, and schema files are present and parseable.
 
 If you are editing in GitHub's web UI, you can skip local commands. The **Validate projects** GitHub Action validates PRs that touch `data/` or `scripts/`. After changes reach `main`, the generated `data/projects/bundle.js` fallback is refreshed automatically.
